@@ -10,6 +10,8 @@ Drawbridge is a mobility-first remote-access platform intended to preserve secur
 
 Drawbridge is a separate Iron Signal Systems product. It may integrate closely with Stronghold, but it must remain independently deployable behind conventional enterprise firewalls and routing environments.
 
+Canonical Drawbridge architecture terminology is defined in [TERMINOLOGY.md](TERMINOLOGY.md). Those terms are normative throughout the project.
+
 ## Product statement
 
 > Drawbridge provides a controlled, persistent path between authorized devices, users, and enterprise services across changing or untrusted networks.
@@ -35,7 +37,7 @@ Drawbridge is not intended to be "another VPN." Its core design goals are:
 4. **Production changes are versioned, commented, tested, attributable, and reversible.**
 5. **The exact configuration tested is the configuration promoted.**
 6. **Test/staging is a first-class feature, not an optional lab SKU.**
-7. **The client stays out of the user's way when healthy.**
+7. **The Drawbridge Agent stays out of the user's way when healthy.**
 8. **The infrastructure does not stay out of the administrator's way when something is wrong.**
 9. **A connected tunnel is not proof that required services are functional.**
 10. **Records are a first-class subsystem, not a reporting add-on.**
@@ -48,9 +50,9 @@ Drawbridge is not intended to be "another VPN." Its core design goals are:
 
 The first serious target is a Windows-centric enterprise/public-safety deployment:
 
-- Windows client;
+- Windows Drawbridge Agent;
 - Drawbridge Controller;
-- redundant Drawbridge Edge nodes;
+- redundant Drawbridge Gateway nodes;
 - Active Directory integration;
 - AD CS / domain PKI integration;
 - optional NPS/RADIUS integration;
@@ -68,11 +70,12 @@ The first serious target is a Windows-centric enterprise/public-safety deploymen
 
 - [AGENTS.md](AGENTS.md)
 - [LICENSE](LICENSE)
+- [TERMINOLOGY.md](TERMINOLOGY.md)
 - [ARCHITECTURE.md](ARCHITECTURE.md)
 - [IDENTITY-AND-TRUST.md](IDENTITY-AND-TRUST.md)
 - [POLICY-AND-STATE.md](POLICY-AND-STATE.md)
 - [ROUTING-AND-DEPLOYMENT.md](ROUTING-AND-DEPLOYMENT.md)
-- [CLIENT-SENSOR-AND-DNS.md](CLIENT-SENSOR-AND-DNS.md)
+- [AGENT-SENSOR-AND-DNS.md](AGENT-SENSOR-AND-DNS.md)
 - [RECORDS.md](RECORDS.md)
 - [TESTING-AND-CHANGE-CONTROL.md](TESTING-AND-CHANGE-CONTROL.md)
 - [LICENSING.md](LICENSING.md)
