@@ -4,6 +4,8 @@
 
 Drawbridge provides secure, persistent remote connectivity without becoming the enterprise firewall.
 
+Canonical component and actor names are defined in [TERMINOLOGY.md](TERMINOLOGY.md) and are normative for this architecture.
+
 It must be able to operate with:
 
 - Stronghold;
@@ -17,7 +19,7 @@ A Stronghold integration may provide richer identity and policy context, but Str
 
 ## 2. Logical components
 
-### Drawbridge Client
+### Drawbridge Agent
 
 Runs on the endpoint and is responsible for:
 
@@ -32,7 +34,7 @@ Runs on the endpoint and is responsible for:
 - offline policy cache;
 - health reporting.
 
-The client should remain unobtrusive to normal users. Operational detail is primarily for IT.
+The Agent should remain unobtrusive to normal users. Operational detail is primarily for IT.
 
 ### Drawbridge Controller
 
@@ -52,7 +54,7 @@ Responsible for:
 
 The Controller must not sit in the live packet forwarding path.
 
-### Drawbridge Edge
+### Drawbridge Gateway
 
 Terminates remote Drawbridge transport and is responsible for:
 
@@ -62,7 +64,7 @@ Terminates remote Drawbridge transport and is responsible for:
 - policy enforcement;
 - session suspend/resume;
 - path migration;
-- Edge-side Records;
+- Gateway-side Records;
 - high-availability participation.
 
 ### Records subsystem
@@ -72,7 +74,7 @@ Records is a peer of Identity, Mobility, and Policy.
 It must preserve:
 
 - what the endpoint observed;
-- what the Edge observed;
+- what the Gateway observed;
 - what identity was presented;
 - what policy was evaluated;
 - what decision was made;
@@ -90,7 +92,7 @@ It must preserve:
                 +-------------+-------------+
                 |                           |
                 v                           v
-         DRAWBRIDGE CLIENT            DRAWBRIDGE EDGE
+         DRAWBRIDGE AGENT            DRAWBRIDGE GATEWAY
                 |                           |
                 |<==== mobility transport =>|
                 |                           |
@@ -220,12 +222,12 @@ Drawbridge must not invent novel cryptography.
 
 ## 9. HA
 
-Production design assumes at least two Edge nodes.
+Production design assumes at least two Gateway nodes.
 
 Requirements:
 
-- Edge failure must not invalidate endpoint identity;
-- sessions must be resumable on another authorized Edge;
+- Gateway failure must not invalidate endpoint identity;
+- sessions must be resumable on another authorized Gateway;
 - maintenance must not require mass reauthentication where avoidable;
 - Controller loss must not immediately terminate established sessions;
 - DR and test environments are part of the licensed site model.
@@ -236,7 +238,7 @@ A service is not "healthy" merely because:
 
 - a process is running;
 - a port is listening;
-- a client shows connected;
+- the Agent reports connected;
 - a tunnel exists.
 
 Health must distinguish:
@@ -262,15 +264,15 @@ Drawbridge supports two independent decisions:
 - endpoint traffic selection: selective/split, full tunnel, trusted-network bypass;
 - enterprise handoff: routed DMZ, optional NAT, or internal service proxy/connector.
 
-The preferred simple deployment places Drawbridge Edge in a DMZ and routes the Drawbridge virtual client pool through the customer's existing firewall. The existing firewall remains authoritative for enterprise routing and segmentation.
+The preferred simple deployment places Drawbridge Gateway in a DMZ and routes the Drawbridge virtual Device address pool through the customer's existing firewall. The existing firewall remains authoritative for enterprise routing and segmentation.
 
 Complex proxy/connector deployments remain available where shared services, overlapping address space, or security boundaries make ordinary routed handoff unsuitable.
 
 See [ROUTING-AND-DEPLOYMENT.md](ROUTING-AND-DEPLOYMENT.md).
 
-## 12. Client sensor and DNS control
+## 12. Agent sensor and DNS control
 
-Every Drawbridge Client includes a first-class sensor informed by the Pathfinder UDM-Pro sensor model.
+Every Drawbridge Agent includes a first-class sensor informed by the Pathfinder UDM-Pro sensor model.
 
 The sensor observes endpoint connection attempts, DNS activity, process/user context, route decisions, network transitions, and Drawbridge policy outcomes for Records and troubleshooting.
 
@@ -283,4 +285,4 @@ DNS is a Drawbridge policy function. The administrator may choose:
 
 Protected namespaces must not leak to untrusted local resolvers unless explicitly permitted.
 
-See [CLIENT-SENSOR-AND-DNS.md](CLIENT-SENSOR-AND-DNS.md).
+See [AGENT-SENSOR-AND-DNS.md](AGENT-SENSOR-AND-DNS.md).
