@@ -12,11 +12,12 @@ or roadmap documents.
 Before making a material change, read the relevant current documents:
 
 - `README.md`
+- `TERMINOLOGY.md`
 - `ARCHITECTURE.md`
 - `IDENTITY-AND-TRUST.md`
 - `POLICY-AND-STATE.md`
 - `ROUTING-AND-DEPLOYMENT.md`
-- `CLIENT-SENSOR-AND-DNS.md`
+- `AGENT-SENSOR-AND-DNS.md`
 - `RECORDS.md`
 - `TESTING-AND-CHANGE-CONTROL.md`
 - `LICENSING.md`
@@ -26,6 +27,39 @@ Before making a material change, read the relevant current documents:
 
 If implementation and documentation disagree, do not silently choose whichever
 is easier. Identify and resolve the conflict deliberately.
+
+---
+
+## Canonical Terminology
+
+`TERMINOLOGY.md` is normative for architecture terminology.
+
+Use the exact actor or component name when identity, authority, routing, policy,
+or Records attribution matters. In particular:
+
+```text
+User
+Device
+MDT
+Drawbridge Agent
+Drawbridge Gateway
+Drawbridge Controller
+Service Connector
+Device Session
+User Session
+Transport Path
+Resource
+Site
+Tenant / Agency
+```
+
+Do not use `Client` or `Edge` as ambiguous standalone Drawbridge architecture
+terms. Historical references may use those names, and protocol-standard phrases
+such as X.509 client authentication remain valid when they have a precise
+technical meaning.
+
+Do not substitute Device for User, Agent for Device, or Gateway for Device.
+When a statement depends on a security boundary, name the exact actor.
 
 ---
 
@@ -47,7 +81,7 @@ is easier. Identify and resolve the conflict deliberately.
 
 > **Records are a first-class subsystem, not a reporting add-on.**
 
-> **Observed endpoint facts, DNS answers, policy decisions, Edge observations,
+> **Observed endpoint facts, DNS answers, policy decisions, Gateway observations,
 > and later conclusions are different facts.**
 
 > **Historical observations are not rewritten because later knowledge changes
@@ -74,9 +108,9 @@ persistent remote transport
 device/bootstrap connectivity
 user access authorization
 trusted-network transitions
-client traffic selection
+Agent traffic selection
 Drawbridge-specific resource policy
-endpoint and Edge observation
+endpoint and Gateway observation
 DNS policy related to Drawbridge access
 session continuity
 Records
@@ -199,7 +233,7 @@ internal service proxy/connector
 If the customer wants the existing firewall to own enterprise routing and
 segmentation, do not force a proxy architecture.
 
-Prefer preservation of the Drawbridge virtual client address when routed
+Prefer preservation of the Drawbridge virtual Device address when routed
 handoff is possible.
 
 ---
@@ -229,7 +263,7 @@ bindings, private namespaces, and trusted-network transitions.
 
 ---
 
-## Client Sensor and Records Rules
+## Agent Sensor and Records Rules
 
 Every Drawbridge endpoint has a first-class sensor informed by the Pathfinder
 UDM-Pro sensor model.
@@ -244,8 +278,8 @@ process/user context
 route decision
 tunnel/direct decision
 policy decision
-client action
-Edge observation
+Agent action
+Gateway observation
 later assessment
 ```
 
@@ -256,7 +290,7 @@ Historical observations are append-oriented.
 Do not rewrite old Records because DNS, policy, identity, threat classification,
 or location interpretation changed later.
 
-Client and Edge observations remain independently attributable.
+Agent and Gateway observations remain independently attributable.
 
 A later success does not erase an earlier failure.
 
@@ -283,9 +317,9 @@ Drawbridge allow                       != application allow
 outbound access                        != inbound management
 shared-service access                  != domain trust
 shared-service access                  != local admin rights
-client said sent                       != Edge received
-Edge received                          != Edge forwarded
-Edge forwarded                         != destination accepted
+Agent said sent                       != Gateway received
+Gateway received                          != Gateway forwarded
+Gateway forwarded                         != destination accepted
 connection denied                      != unobserved
 unknown                                != false
 test config                            != production config
@@ -352,8 +386,8 @@ AD
 NPS/RADIUS
 trusted networks
 mobility
-client upgrades
-Controller/Edge upgrades
+Agent upgrades
+Controller/Gateway upgrades
 Records
 HA/failover
 MDT workflows
@@ -386,7 +420,7 @@ Do not define health as merely:
 ```text
 service running
 port listening
-client says connected
+Agent reports connected
 ```
 
 Expose meaningful health for:
@@ -412,14 +446,14 @@ reasonably possible.
 
 ## Windows Implementation Rules
 
-The first serious client target is Windows.
+The first serious Device/Agent target is Windows.
 
 Prefer supported Windows-native facilities for production behavior, including
 WFP, Windows networking APIs, Windows certificate stores/CNG, service APIs, and
 TPM-backed keys where appropriate.
 
 Do not shell out to PowerShell or administrative command-line tools from
-production client code when a stable native API is the correct interface.
+production Agent code when a stable native API is the correct interface.
 
 PowerShell remains appropriate for lab orchestration, deployment examples,
 acceptance testing, and diagnostic collection.
@@ -444,7 +478,7 @@ Avoid semantic nulls. Use explicit states once schema contracts are defined.
 Errors should preserve operation, component, identity/session/resource where
 safe, expected state, and actual state.
 
-Do not swallow errors merely to keep the client appearing connected.
+Do not swallow errors merely to keep the Agent appearing connected.
 
 ---
 
@@ -452,7 +486,7 @@ Do not swallow errors merely to keep the client appearing connected.
 
 Do not invent cryptographic protocols.
 
-Separate key purposes for device identity, shared-service identity, Edge,
+Separate key purposes for device identity, shared-service identity, Gateway,
 Controller, configuration signing, Records signing/checkpointing, and
 administrative identity.
 
@@ -509,7 +543,7 @@ git diff --check
 Platform-sensitive behavior requires platform-representative testing.
 
 Mobility validation should eventually cover Wi-Fi/Ethernet/cellular transitions,
-temporary loss of connectivity, sleep/resume, NAT rebinding, Edge failover, and
+temporary loss of connectivity, sleep/resume, NAT rebinding, Gateway failover, and
 Controller unavailability.
 
 A later success does not erase an earlier failed test.
