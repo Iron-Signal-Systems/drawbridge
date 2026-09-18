@@ -21,7 +21,7 @@ Test must support the same core behavior as production:
 - PKI;
 - AD integration;
 - NPS/RADIUS;
-- client behavior;
+- Agent behavior;
 - trusted-network behavior;
 - mobility;
 - Records;
@@ -85,7 +85,7 @@ Changes requiring comments include:
 - tenant configuration;
 - remote-management authorization;
 - Records/retention policy;
-- Edge/controller environment configuration;
+- Gateway/Controller environment configuration;
 - upgrades.
 
 The interface should reject empty or meaningless comments.
@@ -154,11 +154,11 @@ Temporary emergency changes should not silently become permanent.
 
 ## 9. Upgrade staging
 
-Server/client upgrades follow the same model.
+Gateway/Controller and Agent upgrades follow the same model.
 
 Before production:
 
-- deploy to test Controller/Edge;
+- deploy to test Controller/Gateway;
 - validate database migration;
 - validate certificates;
 - validate AD sync;
@@ -167,7 +167,7 @@ Before production:
 - validate session migration;
 - validate Records;
 - validate failover;
-- validate client compatibility;
+- validate Agent compatibility;
 - perform operational MDT testing where relevant.
 
 ## 10. Upgrade preflight
@@ -178,7 +178,7 @@ Production upgrade should be blocked on critical preflight failures such as:
 - PKI failure;
 - insufficient disk;
 - unhealthy HA peer;
-- incompatible Edge/Controller versions;
+- incompatible Gateway/Controller versions;
 - failed database backup/checkpoint;
 - unresolved critical configuration validation issue.
 
