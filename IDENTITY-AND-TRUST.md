@@ -69,7 +69,7 @@ Typical allowed services:
 - SYSVOL/NETLOGON as required;
 - NTP;
 - PKI/CRL/OCSP;
-- Drawbridge Controller/Edge services;
+- Drawbridge Controller/Gateway services;
 - approved endpoint-management services.
 
 Everything else remains denied until policy grants it.
@@ -102,9 +102,9 @@ Use a Drawbridge/shared-services PKI.
 
 Preferred enrollment:
 
-1. client generates private key locally;
+1. Agent generates the Device private key locally;
 2. preferably TPM-backed and non-exportable;
-3. client generates CSR;
+3. Agent generates a Device CSR;
 4. administrator approves device enrollment;
 5. issuing CA signs device certificate;
 6. endpoint stores certificate/private key locally.
