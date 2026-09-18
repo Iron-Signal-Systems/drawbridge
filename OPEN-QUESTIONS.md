@@ -59,7 +59,7 @@ These items are intentionally unresolved and should be decided before or during 
 ## HA
 
 - Replicated session state versus resumable cryptographic token?
-- Edge selection?
+- Gateway selection?
 - Site affinity?
 - Geographic redundancy?
 - Data-plane behavior if Controller is unavailable for extended periods?
@@ -74,7 +74,7 @@ These items are intentionally unresolved and should be decided before or during 
 - How are overlapping tenant address spaces represented without losing audit identity?
 - How are private DNS namespaces and FQDN-to-address bindings enforced securely?
 
-## Client sensor and DNS implementation
+## Agent sensor and DNS implementation
 
 - Exact Windows capture/enforcement points for DNS and socket creation?
 - WFP versus Windows DNS policy/NRPT integration versus hybrid approach?
@@ -96,7 +96,7 @@ These items are intentionally unresolved and should be decided before or during 
 Site licensing is the design direction, but commercial tiers still need to be defined:
 
 - site class based on throughput?
-- number of production Edge clusters?
+- number of production Gateway clusters?
 - support SLA?
 - regional/multi-site pricing?
 - hosted-service pricing?
