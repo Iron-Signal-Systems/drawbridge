@@ -12,9 +12,9 @@ Its purpose is to reconstruct:
 - what network and location context existed;
 - what policy evaluated the activity;
 - what decision was made;
-- what the client did;
-- what the Edge observed;
-- what the Edge did;
+- what the Agent did;
+- what the Gateway observed;
+- what the Gateway did;
 - how the session moved across networks;
 - what configuration version was effective.
 
@@ -52,10 +52,10 @@ what later analysis concluded
 - Session resumed
 - Session migrated
 - Session terminated
-- Client forwarding action
-- Edge receipt
-- Edge forwarding action
-- Edge deny/drop
+- Agent forwarding action
+- Gateway receipt
+- Gateway forwarding action
+- Gateway deny/drop
 - Certificate enrollment
 - Certificate renewal
 - Certificate revocation
@@ -141,26 +141,26 @@ Access to location records should itself be auditable.
 
 Retention may differ from general connection metadata.
 
-## 7. Client and Edge independence
+## 7. Agent and Gateway independence
 
-The endpoint and Edge should report independently.
+The Agent and Gateway should report independently.
 
 Example correlation:
 
 ```text
-CLIENT OBSERVED:
+AGENT OBSERVED:
   connection attempt
 
-CLIENT DECIDED:
+AGENT DECIDED:
   tunnel
 
-EDGE OBSERVED:
+GATEWAY OBSERVED:
   packet received
 
-EDGE DECIDED:
+GATEWAY DECIDED:
   allow
 
-EDGE DID:
+GATEWAY DID:
   forwarded
 ```
 
@@ -176,7 +176,7 @@ Candidate identifiers:
 - `connection_id`
 - `policy_version`
 - `config_commit_id`
-- `edge_id`
+- `gateway_id`
 - `tenant_id`
 - `test_run_id`
 
@@ -250,9 +250,9 @@ Results should include:
 - connection counts;
 - confidence/coverage limits.
 
-## 14. Client sensor baseline
+## 14. Agent sensor baseline
 
-The Drawbridge Client sensor is a mandatory observation source.
+The Drawbridge Agent sensor is a mandatory observation source.
 
 At minimum it should correlate:
 
@@ -269,4 +269,4 @@ At minimum it should correlate:
 - session state;
 - policy version.
 
-The client sensor should follow the same observation discipline as Pathfinder: preserve what was observed independently from later assessment.
+The Agent sensor should follow the same observation discipline as Pathfinder: preserve what was observed independently from later assessment.
