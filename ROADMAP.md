@@ -24,8 +24,8 @@ Deliverable: design baseline suitable for implementation review.
 
 Build:
 
-- Windows client proof-of-concept;
-- Drawbridge Edge proof-of-concept;
+- Windows Drawbridge Agent proof-of-concept;
+- Drawbridge Gateway proof-of-concept;
 - virtual interface;
 - stable virtual address;
 - secure authenticated transport;
@@ -95,7 +95,7 @@ Build:
 - DNS context;
 - process attribution;
 - policy decisions;
-- Edge observations;
+- Gateway observations;
 - network transitions;
 - optional location observation;
 - correlation.
@@ -123,8 +123,8 @@ Success:
 
 Build:
 
-- Edge clustering;
-- session resume across Edge failure;
+- Gateway clustering;
+- session resume across Gateway failure;
 - Controller independence;
 - upgrade preflight;
 - DR;
