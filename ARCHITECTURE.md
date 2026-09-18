@@ -21,7 +21,15 @@ A Stronghold integration may provide richer identity and policy context, but Str
 
 ### Drawbridge Agent
 
-Runs on the endpoint and is responsible for:
+Drawbridge has two explicit Agent contracts: Domain Agent and Shared-Service Agent. They may share narrow libraries but remain distinct top-level implementations.
+
+The Agent's primary responsibilities are networking/transport and presentation of the Device credential while carrying required Windows/User authentication and MFA traffic.
+
+The Domain Agent runs under a narrowly scoped gMSA. Elevated network operations, where required, use a narrow Network Helper rather than a general privileged Agent.
+
+Agents do not trust, administer, or directly control peer Agents.
+
+Common endpoint functions include:
 
 - device authentication;
 - virtual network identity;
@@ -54,6 +62,10 @@ Responsible for:
 
 The Controller must not sit in the live packet forwarding path.
 
+Managed components establish authenticated persistent control channels to the Controller. The Controller pushes declarative, versioned artifacts over those established channels; targets independently validate, apply, verify effective hash/state, and return execution receipts.
+
+The Controller has no general-purpose remote shell into managed components and should operate on a dedicated management/control network.
+
 ### Drawbridge Gateway
 
 Terminates remote Drawbridge transport and is responsible for:
@@ -66,6 +78,8 @@ Terminates remote Drawbridge transport and is responsible for:
 - path migration;
 - Gateway-side Records;
 - high-availability participation.
+
+Each Gateway has host-specific gMSAs; separate functions use separate gMSAs where permissions differ. Gateway identities have no general domain or endpoint administrative authority.
 
 ### Records subsystem
 
@@ -81,6 +95,14 @@ It must preserve:
 - what action was taken;
 - what network/location state existed at the time;
 - what configuration version produced the decision.
+
+Canonical Records are complete write-once objects immutable from birth. Mutable indexes/views are derived and rebuildable.
+
+### Drawbridge Recovery Store
+
+DRS preserves complete, verifiable Gateway/Controller configuration outside production AD trust. A new immutable object is created after each production configuration change and at least every 12 hours.
+
+Preferred DRS design is hardened FreeBSD with ZFS, PF, VNET jails, and a host-local Sealer. See [RECOVERY-STORE.md](RECOVERY-STORE.md).
 
 ## 3. Core architecture
 
@@ -100,6 +122,8 @@ It must preserve:
 ```
 
 The Controller is authoritative for configuration and policy distribution but must not be required for every forwarded packet.
+
+See [THREAT-MODEL.md](THREAT-MODEL.md) for normative compromise boundaries.
 
 ## 4. Device and user planes
 

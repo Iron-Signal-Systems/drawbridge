@@ -6,15 +6,19 @@ This roadmap is architectural, not a delivery commitment.
 
 Freeze:
 
-- trust model;
-- state machine;
+- threat/compromise model;
+- orthogonal authoritative state domains;
+- Domain Agent and Shared-Service Agent contracts;
+- Agent/Gateway/Controller/Connector privilege boundaries;
 - device/user authorization contract;
-- Records schema;
+- DNP-style Authority Grant model;
+- immutable-from-birth Records contract;
+- Drawbridge Recovery Store contract;
 - policy object model;
 - configuration/version model;
 - test/promotion model;
-- PKI profiles;
-- site/tenant model;
+- PKI profiles and PKI-compromise behavior;
+- Site/Tenant model;
 - transport requirements;
 - licensing invariants.
 
@@ -24,7 +28,8 @@ Deliverable: design baseline suitable for implementation review.
 
 Build:
 
-- Windows Drawbridge Agent proof-of-concept;
+- separate Windows Domain Agent and Shared-Service Agent compositions;
+- narrow privileged Network Helper proof-of-concept where required;
 - Drawbridge Gateway proof-of-concept;
 - virtual interface;
 - stable virtual address;
@@ -90,6 +95,8 @@ Success:
 
 Build:
 
+- immutable-from-birth canonical object format and durable commit acknowledgement;
+- rebuildable derived indexing/search;
 - endpoint sensor baseline informed by Pathfinder UDM-Pro sensor;
 - connection attempts;
 - DNS context;
@@ -113,7 +120,8 @@ Build:
 - test deployment;
 - validation records;
 - exact-artifact promotion;
-- rollback/revert;
+- Controller push-and-verify execution receipts;
+- monotonic rollback/revert as a new version;
 - counterfactual Records replay.
 
 Success:
@@ -127,8 +135,10 @@ Build:
 - session resume across Gateway failure;
 - Controller independence;
 - upgrade preflight;
+- Drawbridge Recovery Store deployment and restore testing;
+- domain-compromise recovery exercise;
 - DR;
-- health model;
+- health/self-review model;
 - synthetic functional tests.
 
 Success:

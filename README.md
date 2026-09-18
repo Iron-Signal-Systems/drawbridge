@@ -41,7 +41,7 @@ Drawbridge is not intended to be "another VPN." Its core design goals are:
 8. **The infrastructure does not stay out of the administrator's way when something is wrong.**
 9. **A connected tunnel is not proof that required services are functional.**
 10. **Records are a first-class subsystem, not a reporting add-on.**
-11. **Historical observations are preserved; later conclusions do not rewrite prior observations.**
+11. **Canonical Records and recovery objects are immutable from birth; later facts create new objects.**
 12. **Shared-service connectivity does not imply domain trust or endpoint administrative authority.**
 13. **Drawbridge should make secure change safer than doing nothing.**
 14. **The internal policy model should be simple and deterministic even when external integrations are broad.**
@@ -50,7 +50,7 @@ Drawbridge is not intended to be "another VPN." Its core design goals are:
 
 The first serious target is a Windows-centric enterprise/public-safety deployment:
 
-- Windows Drawbridge Agent;
+- distinct Windows Domain Agent and Shared-Service Agent implementations;
 - Drawbridge Controller;
 - redundant Drawbridge Gateway nodes;
 - Active Directory integration;
@@ -62,7 +62,8 @@ The first serious target is a Windows-centric enterprise/public-safety deploymen
 - device-management plane;
 - user authorization plane;
 - deterministic access policies;
-- Records;
+- immutable-from-birth Records;
+- Drawbridge Recovery Store outside the production AD trust boundary;
 - test/staging;
 - versioned promotion and rollback.
 
@@ -72,11 +73,13 @@ The first serious target is a Windows-centric enterprise/public-safety deploymen
 - [LICENSE](LICENSE)
 - [TERMINOLOGY.md](TERMINOLOGY.md)
 - [ARCHITECTURE.md](ARCHITECTURE.md)
+- [THREAT-MODEL.md](THREAT-MODEL.md)
 - [IDENTITY-AND-TRUST.md](IDENTITY-AND-TRUST.md)
 - [POLICY-AND-STATE.md](POLICY-AND-STATE.md)
 - [ROUTING-AND-DEPLOYMENT.md](ROUTING-AND-DEPLOYMENT.md)
 - [AGENT-SENSOR-AND-DNS.md](AGENT-SENSOR-AND-DNS.md)
 - [RECORDS.md](RECORDS.md)
+- [RECOVERY-STORE.md](RECOVERY-STORE.md)
 - [TESTING-AND-CHANGE-CONTROL.md](TESTING-AND-CHANGE-CONTROL.md)
 - [LICENSING.md](LICENSING.md)
 - [OPERATIONS.md](OPERATIONS.md)

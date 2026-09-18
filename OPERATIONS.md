@@ -51,6 +51,7 @@ Drawbridge should detect conditions likely to fail later during:
 
 Examples:
 
+- stale/missing Drawbridge Recovery Store checkpoint;
 - expiring CA;
 - expiring Gateway certificate;
 - failed CRL publication;
@@ -204,3 +205,20 @@ For each endpoint, IT should be able to see:
 - DNS policy version.
 
 DNS failure must be distinguishable from tunnel failure.
+
+
+## 15. Lost/stolen Device response
+
+Any authorized in-scope Revocation Operator may revoke a Device immediately. Drawbridge terminates active Device Sessions, denies resume/new sessions, initiates certificate revocation, and records subsequent attempts.
+
+Return to service requires hands-on IT verification, new key generation, full certificate re-issue, renewed enrollment, and validation.
+
+## 16. Infrastructure/domain compromise recovery
+
+Gateway, Controller, and Connector host-specific identities allow one node to be isolated without replacing healthy peer credentials.
+
+Full domain compromise is treated as domain trust collapse. Recovery uses verified configuration from the independent Drawbridge Recovery Store, trusted-media rebuild, new identities/certificates, validation, and controlled return to production.
+
+## 17. Controller self-review
+
+The Controller compares its security posture to an explicit baseline and identifies unexpected services/listeners, broadened permissions, certificate/private-key ACL changes, widened firewall exposure, stale/revoked trust, configuration hash mismatch, and failed Records/DRS delivery. Self-review recommends remediation rather than silently broadening authority.

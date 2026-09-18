@@ -35,7 +35,7 @@ These items are intentionally unresolved and should be decided before or during 
 - Preferred AD incremental sync mechanism?
 - Nested group semantics?
 - Multiple domains/forests?
-- Read-only gMSA permission model?
+- Exact read attributes and delegation required by each host/function-specific gMSA?
 - Maximum acceptable stale-directory interval?
 
 ## Shared services
@@ -48,13 +48,36 @@ These items are intentionally unresolved and should be decided before or during 
 
 ## Records
 
+The canonical object model is decided: complete write-once objects are immutable from birth.
+
 - Canonical schema/encoding?
 - Local endpoint spool format?
-- Ingestion protocol?
+- Ingestion protocol and durable-receipt format?
 - Signing/checkpoint model?
 - Default retention?
 - Physical location default: off?
 - Process attribution coverage and privacy boundaries?
+
+## Controller control plane
+
+- Exact authenticated persistent-channel transport?
+- Exact artifact signing/verification profile?
+- How are urgent revocations prioritized over routine configuration distribution?
+- How is effective-state verification represented and retried?
+- How is the dedicated Controller management/control network segmented for small versus large sites?
+
+## Recovery Store
+
+Core architecture is decided: independent non-domain storage, immutable-from-birth complete snapshots, immediate snapshot after production change, periodic snapshot at least every 12 hours, hardened FreeBSD/ZFS/PF/VNET preferred.
+
+Open implementation questions:
+
+- physical appliance versus independently administered VM profile?
+- exact ZFS dataset/object layout?
+- independent administrative authentication profile?
+- secondary/off-site replication target?
+- signing/checkpoint/witness profile?
+- maximum accepted checkpoint age?
 
 ## HA
 
@@ -124,3 +147,11 @@ Need an explicit acceptance matrix for:
 - application owners.
 
 The pilot success definition must be operational, not merely "tunnel connected."
+
+
+## Remaining threat-model completion
+
+- software/update and supply-chain compromise;
+- availability and denial-of-service boundaries;
+- privacy/sensitive telemetry boundaries;
+- final accepted-risk and non-goal statements.

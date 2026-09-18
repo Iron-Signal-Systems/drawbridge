@@ -4,6 +4,8 @@
 
 Every Drawbridge endpoint should include a first-class sensor modeled conceptually after the Pathfinder UDM-Pro sensor.
 
+Both Domain Agent and Shared-Service Agent include this observation function. The sensor does not change either Agent's authority boundary.
+
 The sensor is not a separate security product. It is the endpoint observation source for Drawbridge Records and policy verification.
 
 It should observe, subject to platform capability and site policy:
@@ -39,6 +41,8 @@ what the Gateway later observed
 ## 2. DNS is a Drawbridge policy function
 
 DNS handling must be explicitly controlled by Drawbridge policy.
+
+DNS is discovery/resolution, not authorization. A hostile resolver may redirect a connection attempt, but cryptographic peer authentication must still prove Drawbridge infrastructure identity and DNS answers must not independently expand Resource authorization.
 
 The endpoint operating system must not be allowed to make uncontrolled DNS decisions that can bypass Drawbridge policy.
 

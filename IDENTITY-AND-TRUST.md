@@ -16,6 +16,8 @@ Network connectivity does not imply application authorization.
 
 Domain-managed Windows is the v1 gold-path deployment.
 
+The Domain Agent runs under a narrowly scoped gMSA. Device identity, Agent service identity, and User identity remain separate. The gMSA is not a substitute for Device identity, User authorization, or Resource policy.
+
 ### Device enrollment
 
 The administrator configures one or more Mobility OUs.
@@ -52,9 +54,11 @@ Recommended properties:
 - chain and revocation validation;
 - explicit identity mapping to the synchronized AD computer object.
 
-The certificate proves possession of an authorized machine identity.
+The certificate proves possession of the configured machine credential.
 
-AD OU state determines current administrative authorization.
+Certificate validity alone does not establish current Drawbridge authorization. Enrollment/revocation state and policy are evaluated independently.
+
+AD OU state may contribute to current authorization while the domain is trusted.
 
 ### Bootstrap/device connection
 
@@ -193,7 +197,31 @@ Each tenant should have independently scoped:
 
 Cross-tenant access requires explicit policy.
 
-## 6. Authorization equation
+## 6. Device revocation and recovery
+
+Any authorized in-scope Revocation Operator may immediately revoke a Device. Active Device Sessions terminate and new/resumed sessions are denied without waiting for AD or normal PKI publication.
+
+A lost/stolen credential is never simply unrevoked. Recovery requires hands-on IT verification, new key/CSR, full Device certificate re-issue, renewed enrollment, and validation. The old credential remains permanently revoked.
+
+## 7. Administrative authority
+
+Drawbridge follows a DNP-style scoped Authority Grant model rather than simple role-name checks. Holding authority and exercising it are separate facts; delegation cannot exceed the delegator's authority.
+
+## 8. Service identities
+
+Gateway, Controller, Connector, and other Windows service hosts use host-specific gMSA sets, with function separation where permissions differ. Domain identity does not imply domain administrative authority.
+
+## 9. Full domain compromise
+
+Full AD compromise is collapse of that domain's trust boundary. Drawbridge does not claim continued trust in domain Users, computer accounts, gMSAs, Kerberos, AD groups, GPO, domain-derived administrators, or dependent domain-joined Windows hosts.
+
+## 10. PKI trust failure
+
+Once an issuing PKI authority is declared compromised, Drawbridge denies all new trust establishment through it, including new Device connections, fresh reconnects, initialization/bootstrap, enrollment/renewal, and affected infrastructure initialization.
+
+Revoked security credentials are replaced, not reactivated.
+
+## 11. Authorization equation
 
 A useful baseline:
 
@@ -212,3 +240,6 @@ effective access
 ```
 
 A broader grant in one dimension must not silently override a restriction in another.
+
+
+See [THREAT-MODEL.md](THREAT-MODEL.md) and [RECOVERY-STORE.md](RECOVERY-STORE.md).

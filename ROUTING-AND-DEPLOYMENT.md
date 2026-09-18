@@ -173,6 +173,10 @@ Drawbridge Service Connector
 
 The internal connector may establish new service-side connections instead of requiring the enterprise to route the remote virtual Device address pool.
 
+The Service Connector is a narrowly scoped Resource bridge, not a general internal gateway or jump host. It may reach only explicitly assigned Resources/supporting services, and enterprise firewall policy should independently enforce the same boundary.
+
+Connector service identities are host/function scoped and provide no general domain or endpoint administrative authority.
+
 This is useful for:
 
 - shared-services environments;
@@ -353,6 +357,8 @@ backend:
 
 ## 9. Security boundaries
 
+Transport networks are assumed potentially hostile. IP addressing, DHCP, DNS, SSID, subnet, gateway address, and apparent enterprise topology do not prove trust. DNS locates an endpoint; cryptographic peer authentication proves the Drawbridge peer.
+
 Drawbridge must not interpret "firewall-owned routing" as "Drawbridge allows everything."
 
 The minimum security boundary remains:
@@ -370,6 +376,8 @@ current network state
 The existing firewall may apply additional restrictions.
 
 This creates defense in depth without forcing duplicated policy everywhere.
+
+Gateway hosts use host-specific service identities and receive no general domain administrative authority. A compromised Device may generate malicious traffic, so authenticated Device traffic remains constrained by Drawbridge Resource policy and the enterprise firewall.
 
 ## 10. Recommended v1 priority
 

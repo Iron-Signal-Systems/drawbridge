@@ -180,15 +180,19 @@ Candidate identifiers:
 - `tenant_id`
 - `test_run_id`
 
-## 9. Append-oriented history
+## 9. Canonical objects are immutable from birth
 
-Historical observations should not be mutated when new intelligence appears.
+A canonical object is created complete, validated, written once, verified, and never modified. There is no append, patch, update-in-place, or rewrite operation on a canonical object.
 
-If Drawbridge later concludes that an old destination was malicious, create a new assessment linked to the original record.
+Corrections and later facts create new canonical objects linked to earlier objects where appropriate.
 
 ## 10. Integrity
 
-Future target:
+The producer retains its local object until the receiver durably commits and acknowledges the exact object/hash. Same object ID plus same hash is idempotent retransmission; same ID plus different content is a security event.
+
+Mutable search indexes, current-state views, caches, and dashboards are derived and rebuildable.
+
+Integrity target:
 
 - canonical record encoding;
 - sequence/checkpointing;
@@ -270,3 +274,8 @@ At minimum it should correlate:
 - policy version.
 
 The Agent sensor should follow the same observation discipline as Pathfinder: preserve what was observed independently from later assessment.
+
+
+## 15. Security lifecycle completeness
+
+Lost/stolen and compromise incidents preserve reporting, revocation, session termination, certificate action, denied reconnects, hands-on recovery verification, replacement credential issuance, re-enrollment, validation, and return to service as separate immutable-from-birth canonical objects.

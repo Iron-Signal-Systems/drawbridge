@@ -14,11 +14,13 @@ Before making a material change, read the relevant current documents:
 - `README.md`
 - `TERMINOLOGY.md`
 - `ARCHITECTURE.md`
+- `THREAT-MODEL.md`
 - `IDENTITY-AND-TRUST.md`
 - `POLICY-AND-STATE.md`
 - `ROUTING-AND-DEPLOYMENT.md`
 - `AGENT-SENSOR-AND-DNS.md`
 - `RECORDS.md`
+- `RECOVERY-STORE.md`
 - `TESTING-AND-CHANGE-CONTROL.md`
 - `LICENSING.md`
 - `OPERATIONS.md`
@@ -42,8 +44,11 @@ User
 Device
 MDT
 Drawbridge Agent
+Domain Agent
+Shared-Service Agent
 Drawbridge Gateway
 Drawbridge Controller
+Drawbridge Recovery Store
 Service Connector
 Device Session
 User Session
@@ -84,8 +89,8 @@ When a statement depends on a security boundary, name the exact actor.
 > **Observed endpoint facts, DNS answers, policy decisions, Gateway observations,
 > and later conclusions are different facts.**
 
-> **Historical observations are not rewritten because later knowledge changes
-> their interpretation.**
+> **Canonical Records and recovery objects are immutable from birth. Later
+> facts create new canonical objects; they do not mutate old ones.**
 
 > **Shared-service connectivity does not imply domain trust or endpoint
 > administrative authority.**
@@ -149,6 +154,12 @@ resource authorization
 endpoint OS authentication
 destination application authentication
 ```
+
+### Agent implementations
+
+Domain Agent and Shared-Service Agent are distinct top-level implementations/contracts. Do not implement this trust distinction as scattered runtime mode checks.
+
+Agents do not trust, administer, authenticate to, or directly control peer Agents.
 
 ### Domain-managed devices
 
@@ -285,10 +296,9 @@ later assessment
 
 Denied traffic remains operationally and forensically important.
 
-Historical observations are append-oriented.
+Canonical Records are complete write-once objects and immutable from birth.
 
-Do not rewrite old Records because DNS, policy, identity, threat classification,
-or location interpretation changed later.
+Do not append to, patch, or rewrite a canonical Record. Later facts create new canonical objects linked to prior facts.
 
 Agent and Gateway observations remain independently attributable.
 
@@ -324,7 +334,9 @@ connection denied                      != unobserved
 unknown                                != false
 test config                            != production config
 manually recreated config              != tested artifact
-rollback                               != history deletion
+rollback                               != activating an old production version
+recovery source                         != live policy authority
+valid historical artifact              != current authorized artifact
 service running                        != system healthy
 ```
 
@@ -367,7 +379,9 @@ Emergency changes are allowed when operational restoration requires them, but
 still require a named administrator, mandatory reason, exact diff, emergency
 classification, post-change validation, and review.
 
-Rollback/revert creates new history; it does not erase the original change.
+Rollback/revert creates a new higher production version that intentionally restores prior behavior; it does not activate an older production artifact or erase history.
+
+Managed components accept declarative artifacts through the bounded control protocol and independently verify target, version, hash, authorization, and effective state.
 
 ---
 
@@ -492,8 +506,10 @@ administrative identity.
 
 A valid TLS connection is not itself authorization.
 
-A certificate chaining to a trusted CA is not by itself sufficient device
+A certificate chaining to a trusted CA is not by itself sufficient Device
 authorization.
+
+If an issuing PKI authority is declared compromised, deny all new trust establishment through it, including new connections, fresh reconnects, initialization/bootstrap, enrollment/renewal, and affected infrastructure initialization.
 
 Define trust root, identity, purpose, enrollment, rotation, revocation, expiry,
 and failure behavior before depending on a credential.
@@ -519,7 +535,9 @@ silently broaden a resource ACL
 silently switch protected DNS to local DNS
 silently bypass the tunnel after policy failure
 allow licensing state to stop public-safety forwarding
-rewrite historical Records
+rewrite, append to, or patch canonical Records
+give a network-facing DRS jail mutable access to canonical recovery storage
+treat full domain compromise as though domain-managed identities remain trustworthy
 autonomously apply a recommended production policy change
 ```
 
@@ -627,7 +645,22 @@ an outage and invisible enough to the field user that normal mobility requires
 no networking expertise.
 
 Prefer explicit identity, deterministic policy, bounded privilege, stable
-mobility, observable DNS, traceable routing, append-oriented Records,
+mobility, observable DNS, traceable routing, immutable-from-birth canonical Records and recovery objects,
 production-equivalent testing, attributable change, clear failures, and safe
 continuity over hidden magic, opaque precedence, silent fallback, license-driven
 outages, unreviewed production edits, or unverifiable history.
+
+
+---
+
+## Compromise and Recovery Rules
+
+The normative compromise model is THREAT-MODEL.md.
+
+Gateway, Controller, and Connector Windows service identities are host scoped; separate functions use separate gMSAs where permissions differ.
+
+A lost/stolen Device may be revoked immediately by one in-scope Revocation Operator. Return to service requires hands-on verification and a new Device credential.
+
+DRS is outside production AD trust. Gateways/Controllers push complete recovery objects after each production change and at least every 12 hours. Network-facing DRS VNET jails never receive mutable canonical-store access.
+
+A full domain compromise is a domain trust collapse. Recovery uses independently protected trust and verified configuration.

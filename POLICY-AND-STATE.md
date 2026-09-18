@@ -53,30 +53,33 @@ outbound: explicitly allowed resources only
 inbound: none
 ```
 
-## 4. Session states
+## 4. Orthogonal authoritative state domains
 
-Initial state model:
+Drawbridge does not use one mixed state enum.
 
-- `OFFLINE`
-- `DEVICE_AUTHENTICATING`
-- `DEVICE_CONNECTED`
-- `USER_AUTHENTICATING`
-- `USER_AUTHORIZED`
-- `TRUSTED_NETWORK`
-- `SESSION_SUSPENDED`
-- `SESSION_RESUMING`
-- `LIMITED`
-- `QUARANTINED`
-- `REVOKED`
-- `DEGRADED`
+DeviceSessionState: NONE, CREATING, ACTIVE, SUSPENDED, TERMINATING, TERMINATED.
 
-Exact allowed transitions must be formalized before implementation.
+TransportState: OFFLINE, CONNECTING, ESTABLISHED, SUSPENDED, RESUMING, FAILED.
 
-## 5. User-facing states
+DeviceAuthorizationState: UNKNOWN, AUTHENTICATING, AUTHORIZED, DENIED, REVOKED.
+
+UserAuthorizationState: NO_USER, AUTHENTICATING, AUTHORIZED, DENIED, STALE.
+
+NetworkTrustState: UNKNOWN, UNTRUSTED, TRUSTED.
+
+PolicyPosture: NORMAL, LIMITED, QUARANTINED, BLOCKED.
+
+HealthState: HEALTHY, DEGRADED, FAILED.
+
+State, reason, and event are different concepts.
+
+Exact allowed transitions within and across the authoritative state domains must be formalized before implementation.
+
+## 5. Derived user-facing states
 
 The normal endpoint UI should remain simple.
 
-Suggested user-visible states:
+These are derived UI views, not authoritative security states:
 
 - Connected
 - Device Only
@@ -170,7 +173,11 @@ Base functionality should include:
 
 These must not be separately licensed feature packs.
 
-## 11. Fail-open/fail-closed
+## 11. Administrative authority evaluation
+
+Security-sensitive administrative operations evaluate a current scoped Authority Grant against exact actor, Site/Tenant, operation, protected target, governed scope, time, and policy. Revocation authority may remove trust without creating new trust.
+
+## 12. Fail-open/fail-closed
 
 Security failure behavior must be explicit and administrator-configurable within safe bounds.
 
@@ -186,7 +193,9 @@ Examples requiring defined behavior:
 
 No hidden implicit fail-open behavior.
 
-## 12. DNS policy
+A declared PKI compromise is fail-closed for all new trust establishment through the affected issuer.
+
+## 13. DNS policy
 
 DNS behavior is explicit policy.
 

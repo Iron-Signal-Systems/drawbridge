@@ -45,6 +45,13 @@ MDT is a deployment role of a Device, not a different trust primitive.
 
 The Drawbridge software installed on and operating from a Device.
 
+Drawbridge defines two explicit Agent implementations/contracts:
+
+- Domain Agent — hosting-organization/domain-managed Device;
+- Shared-Service Agent — Device administered by a participating agency or other independent authority.
+
+They may share narrow libraries but remain distinct top-level implementations.
+
 The Agent is responsible for endpoint-side Drawbridge functions such as:
 
 - Device authentication;
@@ -93,6 +100,14 @@ The management and control component responsible for functions such as:
 - health and readiness status.
 
 The Controller must not be required for every forwarded packet.
+
+### Drawbridge Recovery Store
+
+An independent configuration-recovery subsystem outside the production Windows/AD trust boundary.
+
+It receives complete Gateway/Controller recovery objects and preserves canonical objects that are immutable from birth.
+
+It is a recovery anchor, not a live policy authority.
 
 ### Service Connector
 
@@ -183,6 +198,16 @@ Tenant-scoped objects may include:
 - shared-service relationships.
 
 Cross-Tenant access requires explicit policy.
+
+### Authority Grant
+
+A current, explicitly scoped grant describing what an identity may perform within exact Site/Tenant/operation/target/scope/time/policy context.
+
+Human-readable roles may bundle Authority Grants, but role names are not themselves the complete authorization decision.
+
+### Revocation Operator
+
+An identity holding narrowly scoped authority to remove trust from explicitly permitted targets. Revocation authority does not inherently grant enrollment, recovery, policy, PKI, or broader administrative authority.
 
 ### Trusted Network
 
@@ -293,6 +318,8 @@ transport_path_id
 resource_id
 site_id
 tenant_id
+recovery_store_id
+authority_grant_id
 ```
 
 Avoid ambiguous architecture identifiers such as:
@@ -318,7 +345,10 @@ Drawbridge Agent        != Drawbridge Gateway
 Device Session          != User Session
 Transport Path          != Device identity
 Gateway authorization   != enterprise firewall authorization
-Network connectivity    != application authorization
+Domain identity          != domain administrative authority
+Certificate validity     != current Drawbridge authorization
+Historical validity      != current authority
+Network connectivity     != application authorization
 ```
 
 When a design statement, Record, API field, error, test, or policy decision

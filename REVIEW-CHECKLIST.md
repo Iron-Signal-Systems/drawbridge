@@ -7,6 +7,19 @@
 - [ ] Drawbridge is mobility/remote access, not an enterprise firewall.
 - [ ] Windows/public-safety is the initial gold path.
 
+## Threat model and privilege
+
+- [ ] Domain Agent and Shared-Service Agent are distinct implementations/contracts.
+- [ ] Agent privilege is read-oriented and any privileged Network Helper is narrow.
+- [ ] Agents do not trust/manage peer Agents.
+- [ ] Gateway/Controller/Connector service identities are host scoped.
+- [ ] Separate functions use separate gMSAs where permissions differ.
+- [ ] Gateway identities have no general domain authority.
+- [ ] Controller channels are initiated by managed components and carry declarative artifacts, not generic remote commands.
+- [ ] Controller management/control networking is isolated from ordinary traffic.
+- [ ] Service Connectors are Resource scoped and independently firewalled.
+- [ ] Full domain compromise is treated as domain trust collapse.
+
 ## Identity
 
 - [ ] Domain-managed devices use configured Mobility OUs.
@@ -17,6 +30,11 @@
 - [ ] Shared-service devices use explicit Drawbridge/shared-services PKI.
 - [ ] Shared-service users may use federation/RADIUS/local strong identity.
 - [ ] Application authentication remains separate where appropriate.
+- [ ] Certificate validity alone does not mean current Drawbridge authorization.
+- [ ] PKI compromise blocks all new trust establishment through the affected issuer.
+- [ ] One authorized in-scope Revocation Operator may immediately revoke a lost/stolen Device.
+- [ ] Recovery requires hands-on IT verification and full certificate re-issue.
+- [ ] Administrative authorization uses scoped Authority Grants rather than role-name checks alone.
 
 ## Access and routing
 
@@ -59,7 +77,10 @@
 - [ ] Agent and Gateway observations are separate.
 - [ ] Policy version and configuration commit are linked to decisions.
 - [ ] Location is supported but strongly controlled.
-- [ ] Historical Records are append-oriented.
+- [ ] Canonical Records objects are immutable from birth.
+- [ ] Canonical objects are complete write-once objects, not append targets.
+- [ ] Mutable indexes/views are derived and rebuildable.
+- [ ] Complete revocation/recovery and authority-exercise lifecycles are recorded.
 
 ## Change control and testing
 
@@ -69,8 +90,19 @@
 - [ ] Exact tested artifact is promoted.
 - [ ] PD Ops / 911 / EMO validation can be recorded.
 - [ ] Emergency changes are auditable and reviewed.
-- [ ] Rollback creates new revert history.
+- [ ] Rollback creates a new higher production version rather than activating an old artifact.
+- [ ] Managed components verify artifact hash/version and report effective-state verification.
 - [ ] Production Records can be replayed against candidate policy.
+
+## Recovery Store
+
+- [ ] DRS is independent of production AD trust.
+- [ ] Complete snapshots are created after production changes and at least every 12 hours.
+- [ ] DRS canonical objects are immutable from birth.
+- [ ] Network-facing VNET jails cannot modify canonical storage.
+- [ ] Host-side Sealer has no network listener.
+- [ ] Recovery access is read-only and independently authenticated.
+- [ ] Acceptance includes a test rebuild from a verified DRS object.
 
 ## Licensing
 
