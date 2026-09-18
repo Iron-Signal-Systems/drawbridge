@@ -26,10 +26,10 @@ without licensing logic choosing which device stops working.
 Target model:
 
 - production Controller;
-- normal HA Edge pair;
+- normal HA Gateway pair;
 - DR/standby;
 - test/staging;
-- test clients;
+- test Devices/Agents;
 - unlimited managed endpoints within supported engineering capacity;
 - unlimited normal users;
 - AD integration;
@@ -60,7 +60,7 @@ Drawbridge should expose:
 - virtual-address capacity;
 - Records ingestion load.
 
-When a site outgrows an Edge cluster, add capacity because the infrastructure needs it—not because endpoint #201 crossed a licensing threshold.
+When a site outgrows an Gateway cluster, add capacity because the infrastructure needs it—not because endpoint #201 crossed a licensing threshold.
 
 ## 5. Licensing and the data path
 
@@ -93,7 +93,7 @@ An expired or unavailable commercial license service must not turn a healthy pro
 - reboot;
 - service restart;
 - failover;
-- Edge replacement.
+- Gateway replacement.
 
 Operational state needed for continuity must be locally durable.
 
