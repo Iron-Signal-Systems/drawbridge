@@ -6,8 +6,8 @@ Drawbridge must not force customers to replace their existing routing or firewal
 
 Routing is modeled on two independent axes:
 
-1. **Endpoint traffic selection** — what traffic the client sends into Drawbridge.
-2. **Enterprise handoff** — how the Drawbridge Edge delivers authorized traffic to the destination environment.
+1. **Endpoint traffic selection** — what traffic the Agent sends into Drawbridge.
+2. **Enterprise handoff** — how the Drawbridge Gateway delivers authorized traffic to the destination environment.
 
 This allows a simple DMZ deployment to remain simple while still supporting more complex proxy/connector deployments where required.
 
@@ -63,11 +63,11 @@ Remote endpoint
       | Drawbridge mobility transport
       v
 +-------------------+
-| Drawbridge Edge   |
+| Drawbridge Gateway   |
 |       DMZ         |
 +---------+---------+
           |
-          | routed virtual client traffic
+          | routed virtual Device traffic
           v
 +-------------------+
 | Existing Firewall |
@@ -77,7 +77,7 @@ Remote endpoint
    Internal networks
 ```
 
-Drawbridge terminates the mobility session and exposes an authorized virtual client address/pool to the existing firewall.
+Drawbridge terminates the mobility session and exposes an authorized virtual Device address/pool to the existing firewall.
 
 The enterprise firewall remains authoritative for:
 
@@ -92,14 +92,14 @@ Drawbridge remains authoritative for:
 - device/session identity;
 - user authorization;
 - tunnel eligibility;
-- client-side traffic selection;
+- Agent-side traffic selection;
 - Drawbridge-specific resource policy;
 - mobility/session continuity;
 - Records.
 
 ### 3.2 Return routing
 
-Preferred behavior is preservation of the Drawbridge virtual client address.
+Preferred behavior is preservation of the Drawbridge virtual Device address.
 
 Example:
 
@@ -108,7 +108,7 @@ Drawbridge virtual pool:
 10.250.0.0/16
 
 Firewall route:
-10.250.0.0/16 -> Drawbridge Edge inside/transit address
+10.250.0.0/16 -> Drawbridge Gateway inside/transit address
 ```
 
 Return traffic follows:
@@ -120,9 +120,9 @@ enterprise firewall
    ->
 Drawbridge virtual pool route
    ->
-Drawbridge Edge
+Drawbridge Gateway
    ->
-logical client session
+logical Device Session
 ```
 
 Static routing is sufficient for small environments.
@@ -139,27 +139,27 @@ Tradeoff:
 
 ```text
 routed handoff:
-firewall can see per-client virtual source addresses
+firewall can see per-Device virtual source addresses
 
 NAT handoff:
-firewall may only see Drawbridge Edge/proxy source addresses
+firewall may only see Drawbridge Gateway/proxy source addresses
 ```
 
 Drawbridge Records must retain the actual endpoint/device/user identity regardless.
 
 ### 3.4 Service proxy / connector handoff
 
-Some environments cannot expose routed client pools into the host network, have overlapping address spaces, or require highly constrained shared-service access.
+Some environments cannot expose routed virtual Device address pools into the host network, have overlapping address spaces, or require highly constrained shared-service access.
 
 For those cases Drawbridge may support an internal service proxy/connector.
 
 Conceptually:
 
 ```text
-Remote client
+Remote Device
     |
     v
-Drawbridge Edge (DMZ)
+Drawbridge Gateway (DMZ)
     |
     | authenticated Drawbridge service channel
     v
@@ -171,13 +171,13 @@ Drawbridge Service Connector
     +--> GIS
 ```
 
-The internal connector may establish new service-side connections instead of requiring the enterprise to route the remote virtual client pool.
+The internal connector may establish new service-side connections instead of requiring the enterprise to route the remote virtual Device address pool.
 
 This is useful for:
 
 - shared-services environments;
 - overlapping RFC1918 networks;
-- organizations that do not permit routed remote-client address pools;
+- organizations that do not permit routed remote Device address pools;
 - application/service-specific exposure;
 - strong tenant isolation.
 
@@ -229,7 +229,7 @@ The exact Windows DNS implementation is not yet frozen.
 
 Requirement:
 
-- Drawbridge Edge in DMZ;
+- Drawbridge Gateway in DMZ;
 - existing firewall remains the router/firewall;
 - only county-private applications use Drawbridge;
 - normal Internet stays local.
@@ -247,9 +247,9 @@ Endpoint
 Enterprise:
 
 ```text
-Drawbridge Edge
+Drawbridge Gateway
     |
-    | source = 10.250.x.x virtual clients
+    | source = 10.250.x.x virtual Device addresses
     v
 Existing Firewall
     |
@@ -267,7 +267,7 @@ Endpoint
    |
    | all traffic
    v
-Drawbridge Edge
+Drawbridge Gateway
    |
    v
 Enterprise Firewall
@@ -290,7 +290,7 @@ Agency A device
       |
       | Drawbridge
       v
-DMZ Edge
+DMZ Gateway
       |
       v
 Internal Service Connector
@@ -328,8 +328,8 @@ reason:
 enterprise_handoff:
   ROUTED_DMZ
 
-edge:
-  DB-EDGE-01
+gateway:
+  DB-GW-01
 
 virtual_source:
   10.250.14.37
