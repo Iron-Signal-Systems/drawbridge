@@ -1,10 +1,10 @@
 # Operations
 
-## 1. Client philosophy
+## 1. Agent and user-experience philosophy
 
 When healthy, Drawbridge should remain mostly invisible to the end user.
 
-The product should preserve the desirable part of mature mobility clients: officers and field users should not troubleshoot networking during normal work.
+The product should preserve the desirable part of mature mobility agents: officers and field users should not troubleshoot networking during normal work.
 
 Suggested user states:
 
@@ -28,7 +28,7 @@ For an endpoint, IT should be able to see:
 - current external path;
 - carrier/network where available;
 - virtual address;
-- current Edge;
+- current Gateway;
 - current session;
 - trusted/untrusted state;
 - policy version;
@@ -52,7 +52,7 @@ Drawbridge should detect conditions likely to fail later during:
 Examples:
 
 - expiring CA;
-- expiring Edge certificate;
+- expiring Gateway certificate;
 - failed CRL publication;
 - virtual-address pool exhaustion;
 - Records storage exhaustion;
@@ -84,7 +84,7 @@ A tunnel can be up while the system is operationally unusable. Drawbridge must e
 
 ## 5. Synthetic tests
 
-Controller/Edge should support representative functional checks such as:
+Controller/Gateway should support representative functional checks such as:
 
 - policy lookup;
 - route calculation;
