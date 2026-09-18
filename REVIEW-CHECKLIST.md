@@ -30,7 +30,7 @@
 - [ ] NAT is compatibility behavior, not the preferred default.
 - [ ] Service connector/proxy mode is available for complex deployments.
 
-## Client sensor and DNS
+## Agent sensor and DNS
 
 - [ ] Every endpoint includes a first-class sensor.
 - [ ] Connection attempts, DNS context, route decisions, and policy decisions are recorded.
@@ -56,7 +56,7 @@
 - [ ] Pathfinder sensor philosophy is the baseline.
 - [ ] Denied connection attempts are recorded.
 - [ ] DNS resolution-at-time is preserved.
-- [ ] Client and Edge observations are separate.
+- [ ] Agent and Gateway observations are separate.
 - [ ] Policy version and configuration commit are linked to decisions.
 - [ ] Location is supported but strongly controlled.
 - [ ] Historical Records are append-oriented.
@@ -83,7 +83,7 @@
 
 ## Operations
 
-- [ ] Healthy client remains mostly out of the user's way.
+- [ ] Healthy Agent remains mostly out of the user's way.
 - [ ] IT gets detailed state and diagnostics.
 - [ ] Latent fatal states are detected before patch/reboot/upgrade where possible.
 - [ ] Upgrade preflight is mandatory.
