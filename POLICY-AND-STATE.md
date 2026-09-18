@@ -11,7 +11,7 @@ Drawbridge should use a small set of understandable objects:
 - Networks
 - Access Profiles
 - Remote Management Policies
-- Gateways / Edges
+- Gateways
 - Sites
 
 The product should not create deep, opaque override hierarchies.
@@ -72,7 +72,7 @@ Initial state model:
 
 Exact allowed transitions must be formalized before implementation.
 
-## 5. Client-facing states
+## 5. User-facing states
 
 The normal endpoint UI should remain simple.
 
@@ -178,11 +178,11 @@ Examples requiring defined behavior:
 
 - Controller unreachable;
 - cached policy expired;
-- Edge available but directory unavailable;
+- Gateway available but directory unavailable;
 - CRL/OCSP temporarily unreachable;
 - trusted-network proof unavailable;
 - Records backend unavailable;
-- client clock skew.
+- Device clock skew.
 
 No hidden implicit fail-open behavior.
 
