@@ -1,5 +1,9 @@
 # Drawbridge
 
+<p align="center">
+  <img src="docs/images/drawbridge.png" alt="Drawbridge — Iron Signal Systems" width="100%">
+</p>
+
 **Drawbridge by Iron Signal Systems**
 
 Drawbridge is a mobility-first remote-access platform intended to preserve secure, authorized network access across changing or unreliable networks while remaining understandable to network and systems administrators.
