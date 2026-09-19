@@ -65,10 +65,25 @@ The Agent is responsible for endpoint-side Drawbridge functions such as:
 
 The Agent is software. It is not the User and it is not the Device itself.
 
+### Drawbridge Service Address
+
+The stable production ingress target used by Drawbridge Agents to reach the Drawbridge service.
+
+It may be represented by an FQDN plus a deployment-specific listener/VIP/ingress mechanism. Agents target the Drawbridge Service Address rather than a named Gateway.
+
+The Service Address is discovery/ingress state, not proof of peer trust.
+
+### Drawbridge Front Distributor
+
+The narrow ingress component that places Drawbridge transport onto an eligible Drawbridge Gateway.
+
+It may evaluate Gateway health, capacity, drain state, and transport affinity. It does not grant Device/User/Tenant/Resource authorization and is not a Controller.
+
+Production uses a redundant Front Distributor tier. Individual Front Distributor nodes should be disposable/reconstructable.
+
 ### Drawbridge Gateway
 
-The server-side Drawbridge component that terminates Drawbridge transport from
-Agents.
+The server-side Drawbridge enforcement/forwarding component that receives Drawbridge transport through the production ingress tier and terminates/validates the Gateway-side session.
 
 The Gateway is responsible for functions such as:
 
@@ -239,9 +254,16 @@ DEVICE SESSION
 TRANSPORT PATH
   |
   v
+DRAWBRIDGE SERVICE ADDRESS
+  |
+  v
+DRAWBRIDGE FRONT DISTRIBUTOR
+  |
+  | traffic placement
+  v
 DRAWBRIDGE GATEWAY
   |
-  | authorized traffic
+  | independently authorized traffic
   v
 ENTERPRISE FIREWALL / NETWORK
   |
@@ -311,6 +333,7 @@ Prefer identifiers that preserve the same distinctions:
 user_id
 device_id
 agent_version
+front_distributor_id
 gateway_id
 device_session_id
 user_session_id
@@ -344,6 +367,8 @@ Device                  != Drawbridge Agent
 Drawbridge Agent        != Drawbridge Gateway
 Device Session          != User Session
 Transport Path          != Device identity
+Drawbridge Service Address != peer authentication
+Front Distributor placement != Gateway authorization
 Gateway authorization   != enterprise firewall authorization
 Domain identity          != domain administrative authority
 Certificate validity     != current Drawbridge authorization

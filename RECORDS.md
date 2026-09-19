@@ -52,6 +52,9 @@ what later analysis concluded
 - Session resumed
 - Session migrated
 - Session terminated
+- Front Distributor placement decision
+- Front Distributor health/failover event
+- Gateway eligibility/drain event
 - Agent forwarding action
 - Gateway receipt
 - Gateway forwarding action
@@ -279,3 +282,26 @@ The Agent sensor should follow the same observation discipline as Pathfinder: pr
 ## 15. Security lifecycle completeness
 
 Lost/stolen and compromise incidents preserve reporting, revocation, session termination, certificate action, denied reconnects, hands-on recovery verification, replacement credential issuance, re-enrollment, validation, and return to service as separate immutable-from-birth canonical objects.
+
+
+## 16. HA and distribution Records
+
+Front Distributor/Gateway placement and failover must be reconstructable rather than disappearing as infrastructure detail.
+
+Relevant Records should preserve, where applicable:
+
+- Drawbridge Service Address/ingress identity;
+- Front Distributor identity;
+- selected Gateway;
+- prior Gateway;
+- placement reason;
+- Gateway eligibility/health state;
+- Front Distributor health transition;
+- drain start/completion;
+- transport interruption;
+- resume attempt/result;
+- logical Device Session preserved/replaced;
+- virtual identity/address preserved/changed;
+- data-plane restoration time.
+
+A Front Distributor placement Record is not an authorization Record. Gateway authorization/enforcement remains independently attributable.

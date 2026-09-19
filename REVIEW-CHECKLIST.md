@@ -67,12 +67,20 @@
 - [ ] FQDN authorization follows observed DNS answers and TTL/refresh state.
 - [ ] Unauthorized DoH/DoT/hard-coded DNS can be controlled.
 
-## Mobility
+## Mobility and HA
 
 - [ ] Stable logical identity survives physical network changes.
 - [ ] Roaming/dead-zone session persistence is core.
 - [ ] Connected transport is not considered proof of functional service.
+- [ ] Agents target a stable Drawbridge Service Address rather than named Gateways.
+- [ ] Production Front Distributors are redundant and narrowly limited to traffic placement/health.
+- [ ] Front Distributor placement never substitutes for Gateway authorization.
+- [ ] Front Distributor nodes are disposable/reconstructable where practical.
+- [ ] Gateway maintenance supports drain/no-new-session behavior.
+- [ ] Front Distributor/Gateway failure does not by itself change Device/User identity or the logical Device Session.
+- [ ] Loss of the front tier does not activate a separate direct-to-Gateway emergency production path.
 - [ ] HA/session recovery is required before serious pilot.
+- [ ] Active Front Distributor and active Gateway failure are explicit acceptance tests.
 
 ## Records
 

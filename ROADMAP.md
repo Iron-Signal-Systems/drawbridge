@@ -19,6 +19,8 @@ Freeze:
 - test/promotion model;
 - PKI profiles and PKI-compromise behavior;
 - Site/Tenant model;
+- stable Drawbridge Service Address and Front Distributor authority boundary;
+- HA/session-continuity contract;
 - transport requirements;
 - licensing invariants.
 
@@ -30,7 +32,9 @@ Build:
 
 - separate Windows Domain Agent and Shared-Service Agent compositions;
 - narrow privileged Network Helper proof-of-concept where required;
+- Drawbridge Front Distributor proof-of-concept behind a stable Service Address;
 - Drawbridge Gateway proof-of-concept;
+- basic Gateway health/placement contract;
 - virtual interface;
 - stable virtual address;
 - secure authenticated transport;
@@ -131,6 +135,9 @@ Success:
 
 Build:
 
+- redundant Front Distributor tier;
+- stable Service Address failover;
+- Front Distributor drain/failure handling;
 - Gateway clustering;
 - session resume across Gateway failure;
 - Controller independence;

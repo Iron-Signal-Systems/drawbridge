@@ -81,11 +81,28 @@ Open implementation questions:
 
 ## HA
 
-- Replicated session state versus resumable cryptographic token?
-- Gateway selection?
-- Site affinity?
-- Geographic redundancy?
-- Data-plane behavior if Controller is unavailable for extended periods?
+Core architecture is decided:
+
+- Agents target a stable Drawbridge Service Address rather than named Gateways;
+- production uses a redundant Drawbridge Front Distributor tier;
+- Front Distributors perform traffic placement only and do not grant authorization;
+- Gateways independently validate/enforce Drawbridge session/authorization state;
+- Front Distributor state should be disposable/reconstructable where practical;
+- loss of all Front Distributors does not activate a direct-to-Gateway emergency production bypass;
+- Transport Path, Front Distributor, or Gateway failure does not by itself redefine Device/User identity or the logical Device Session.
+
+Open implementation/ADR questions:
+
+- active/standby versus active/active Front Distributors?
+- on-prem Service Address mechanism: CARP/VRRP, anycast, external load balancer, or another design?
+- transparent versus transport-aware Front Distributor behavior?
+- exact Gateway health/eligibility contract?
+- replicated session state versus resumable cryptographic token/state versus hybrid?
+- if QUIC is selected, should Connection-ID-aware routing encode/recover Gateway placement?
+- Site affinity and multi-ingress selection?
+- geographic redundancy/failure-domain design?
+- exact data-plane behavior if Controller is unavailable for extended periods?
+- interruption/resume SLO targets?
 
 ## Routing and service handoff
 

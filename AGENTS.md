@@ -14,6 +14,7 @@ Before making a material change, read the relevant current documents:
 - `README.md`
 - `TERMINOLOGY.md`
 - `ARCHITECTURE.md`
+- `HA-AND-SESSION-CONTINUITY.md`
 - `THREAT-MODEL.md`
 - `IDENTITY-AND-TRUST.md`
 - `POLICY-AND-STATE.md`
@@ -46,6 +47,8 @@ MDT
 Drawbridge Agent
 Domain Agent
 Shared-Service Agent
+Drawbridge Service Address
+Drawbridge Front Distributor
 Drawbridge Gateway
 Drawbridge Controller
 Drawbridge Recovery Store
@@ -110,6 +113,7 @@ Drawbridge owns:
 ```text
 device mobility identity
 persistent remote transport
+stable service ingress and Front Distributor placement
 device/bootstrap connectivity
 user access authorization
 trusted-network transitions
@@ -328,6 +332,7 @@ outbound access                        != inbound management
 shared-service access                  != domain trust
 shared-service access                  != local admin rights
 Agent said sent                       != Gateway received
+Front Distributor placement              != Gateway authorization
 Gateway received                          != Gateway forwarded
 Gateway forwarded                         != destination accepted
 connection denied                      != unobserved
@@ -403,7 +408,8 @@ mobility
 Agent upgrades
 Controller/Gateway upgrades
 Records
-HA/failover
+Front Distributor failover
+Gateway failover
 MDT workflows
 ```
 
@@ -578,8 +584,8 @@ git diff --check
 Platform-sensitive behavior requires platform-representative testing.
 
 Mobility validation should eventually cover Wi-Fi/Ethernet/cellular transitions,
-temporary loss of connectivity, sleep/resume, NAT rebinding, Gateway failover, and
-Controller unavailability.
+temporary loss of connectivity, sleep/resume, NAT rebinding, Front Distributor failure,
+Gateway failover, and Controller unavailability.
 
 A later success does not erase an earlier failed test.
 
@@ -688,3 +694,18 @@ A full domain compromise is a domain trust collapse. Recovery uses independently
 Issue #2 is closed at the design-principle level. Implementation work must preserve THREAT-MODEL.md rather than silently redefining its compromise, availability, telemetry, supply-chain, or accepted-risk boundaries.
 
 Location is a normal first-class Records observation where platform capability permits it; preserve source, freshness, and accuracy rather than treating location as infallible truth.
+
+
+## HA and Ingress Rules
+
+Production Agents target the stable Drawbridge Service Address rather than named Gateways.
+
+The Drawbridge Front Distributor is a narrow traffic-placement/health component. It does not grant Device/User/Tenant/Resource authorization and must not become a second Controller.
+
+Gateways independently validate/enforce the Drawbridge session and authorization state for which they are responsible.
+
+Individual Front Distributor nodes should be disposable/reconstructable where practical.
+
+Do not add a rarely exercised direct-to-Gateway emergency production path when the Front Distributor tier is unavailable. Additional resilience must preserve the same Service Address -> Front Distributor -> Gateway architecture.
+
+Transport, Front Distributor, or Gateway failure does not by itself redefine Device identity, User authorization, or the logical Device Session.

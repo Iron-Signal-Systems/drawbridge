@@ -11,6 +11,8 @@ Routing is modeled on two independent axes:
 
 This allows a simple DMZ deployment to remain simple while still supporting more complex proxy/connector deployments where required.
 
+Production ingress is a separate HA layer: the Agent targets the stable Drawbridge Service Address, the redundant Front Distributor tier selects an eligible Gateway, and the Gateway performs Drawbridge authorization/enforcement before enterprise handoff.
+
 ## 2. Endpoint traffic selection
 
 ### 2.1 Selective / split tunnel
@@ -62,10 +64,16 @@ Remote endpoint
       |
       | Drawbridge mobility transport
       v
+Drawbridge Service Address
+      |
+      v
+Redundant Front Distributor tier
+      |
+      v
 +-------------------+
-| Drawbridge Gateway   |
-|       DMZ         |
-+---------+---------+
+| Drawbridge Gateway |
+|       DMZ          |
++---------+----------+
           |
           | routed virtual Device traffic
           v
@@ -89,6 +97,7 @@ The enterprise firewall remains authoritative for:
 
 Drawbridge remains authoritative for:
 
+- stable Drawbridge service ingress and Gateway placement;
 - device/session identity;
 - user authorization;
 - tunnel eligibility;
@@ -233,7 +242,9 @@ The exact Windows DNS implementation is not yet frozen.
 
 Requirement:
 
-- Drawbridge Gateway in DMZ;
+- stable Drawbridge Service Address;
+- redundant Front Distributor tier;
+- Drawbridge Gateway pool in DMZ;
 - existing firewall remains the router/firewall;
 - only county-private applications use Drawbridge;
 - normal Internet stays local.
@@ -251,6 +262,10 @@ Endpoint
 Enterprise:
 
 ```text
+Drawbridge Service Address
+    |
+Front Distributor
+    |
 Drawbridge Gateway
     |
     | source = 10.250.x.x virtual Device addresses
@@ -376,6 +391,8 @@ current network state
 The existing firewall may apply additional restrictions.
 
 This creates defense in depth without forcing duplicated policy everywhere.
+
+Front Distributor placement is not authorization. Gateway hosts independently validate/enforce Drawbridge session and Resource policy. Front Distributor and Gateway identities are separately scoped.
 
 Gateway hosts use host-specific service identities and receive no general domain administrative authority. A compromised Device may generate malicious traffic, so authenticated Device traffic remains constrained by Drawbridge Resource policy and the enterprise firewall.
 

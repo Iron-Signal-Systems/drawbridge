@@ -28,6 +28,7 @@ For an endpoint, IT should be able to see:
 - current external path;
 - carrier/network where available;
 - virtual address;
+- current Front Distributor/ingress path;
 - current Gateway;
 - current session;
 - trusted/untrusted state;
@@ -231,3 +232,26 @@ Unavailable and compromised dependencies are different operational states.
 Temporary Controller, Records, or DRS unavailability must not unnecessarily terminate independently valid established forwarding. Fresh authentication/authorization decisions do not silently bypass a required authority merely because it is unavailable.
 
 DRS checkpoint age, Records spool pressure, control-channel backlog, and identity/PKI dependency availability are explicit health conditions.
+
+
+## 19. Front Distributor and Gateway HA operations
+
+Production ingress is the stable Drawbridge Service Address -> redundant Front Distributor tier -> eligible Gateway pool.
+
+Front Distributor health must expose more than "port open." Operations need to distinguish at least:
+
+- configuration current;
+- ingress/listener functional;
+- Gateway health view current;
+- eligible for serving traffic;
+- draining;
+- degraded/not ready;
+- failed.
+
+Gateway placement eligibility must consider transport/listener health, control/config/policy currency, certificate/trust state, capacity, enterprise handoff, Records/spool pressure, and explicit maintenance state.
+
+Operators must be able to drain a Front Distributor or Gateway before maintenance without changing endpoint configuration.
+
+A single Front Distributor failure should be operationally boring: the stable service remains/re-becomes reachable through another ingress node and Agents resume/re-establish without redefining identity or authorization.
+
+Loss of all Front Distributors does not trigger an untested direct-to-Gateway bypass. Higher availability uses another equivalent ingress failure domain.

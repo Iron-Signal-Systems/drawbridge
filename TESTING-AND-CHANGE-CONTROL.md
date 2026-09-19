@@ -24,6 +24,7 @@ Test must support the same core behavior as production:
 - Agent behavior;
 - trusted-network behavior;
 - mobility;
+- Front Distributor/Gateway HA;
 - Records;
 - routing;
 - DNS behavior.
@@ -236,3 +237,31 @@ Release/update tests must prove:
 Acceptance includes DRS checkpoint age, immediate checkpoint after production change, stored-hash verification, lineage/gap detection, recovery-object export, rebuild of a test Gateway/Controller from a verified recovery object, and proof that DRS administration does not depend on production AD.
 
 A recovery test creates new history; it does not mutate historical DRS objects.
+
+
+## 16. HA and ingress failure testing
+
+HA acceptance must deliberately inject failures rather than infer resilience from healthy-state monitoring.
+
+Required scenarios eventually include:
+
+- kill the currently serving Front Distributor;
+- fail/move the stable Service Address or equivalent ingress ownership;
+- kill an active Gateway;
+- drain a Gateway and verify no new placement while existing sessions follow the defined continuity contract;
+- restore a Gateway and prove health/eligibility before new placement;
+- Controller unavailable while established traffic follows the defined cached/current policy behavior;
+- transport-path change near an ingress/Gateway failure;
+- reconnect storm after common outage.
+
+For a Front Distributor failure, verify:
+
+- no endpoint configuration change;
+- Device identity unchanged;
+- no silent authorization broadening;
+- logical Device Session continuity according to its contract;
+- virtual identity/address continuity according to its contract;
+- no unauthorized Resource access;
+- complete correlated Records for failure, placement, resume, and recovery.
+
+Loss of all Front Distributors must not cause Agents to enter a separate direct-to-Gateway emergency architecture.

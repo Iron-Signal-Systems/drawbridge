@@ -45,6 +45,7 @@ Drawbridge is not intended to be "another VPN." Its core design goals are:
 12. **Shared-service connectivity does not imply domain trust or endpoint administrative authority.**
 13. **Drawbridge should make secure change safer than doing nothing.**
 14. **The internal policy model should be simple and deterministic even when external integrations are broad.**
+15. **Agents target a stable Drawbridge service; replaceable ingress/Gateway nodes must not redefine session identity or authorization.**
 
 ## Initial target
 
@@ -52,6 +53,8 @@ The first serious target is a Windows-centric enterprise/public-safety deploymen
 
 - distinct Windows Domain Agent and Shared-Service Agent implementations;
 - Drawbridge Controller;
+- stable Drawbridge Service Address;
+- redundant Drawbridge Front Distributor tier;
 - redundant Drawbridge Gateway nodes;
 - Active Directory integration;
 - AD CS / domain PKI integration;
@@ -73,6 +76,7 @@ The first serious target is a Windows-centric enterprise/public-safety deploymen
 - [LICENSE](LICENSE)
 - [TERMINOLOGY.md](TERMINOLOGY.md)
 - [ARCHITECTURE.md](ARCHITECTURE.md)
+- [HA-AND-SESSION-CONTINUITY.md](HA-AND-SESSION-CONTINUITY.md)
 - [THREAT-MODEL.md](THREAT-MODEL.md)
 - [IDENTITY-AND-TRUST.md](IDENTITY-AND-TRUST.md)
 - [POLICY-AND-STATE.md](POLICY-AND-STATE.md)

@@ -11,6 +11,7 @@ This document defines the current Drawbridge compromise assumptions, security bo
 - User authorized does not mean Resource authorized.
 - Authenticated Device traffic is not necessarily benign traffic.
 - Agent request does not mean Gateway authorization.
+- Front Distributor placement does not mean Gateway authorization.
 - Gateway authorization does not mean enterprise firewall authorization.
 - Domain identity does not mean domain administrative authority.
 - Drawbridge administration does not mean endpoint, domain, PKI, or firewall administration.
@@ -57,6 +58,18 @@ A genuinely partitioned enforcement point cannot enforce state it has not yet re
 A lost/stolen credential is never simply unrevoked. A recovered Device requires hands-on IT verification, new key/CSR, full certificate re-issue, renewed enrollment binding, validation, and return-to-service authorization. The old certificate remains permanently revoked.
 
 Every step is a separate immutable-from-birth canonical Record.
+
+## Front Distributor boundary
+
+The Front Distributor is a traffic-placement component, not an authorization authority.
+
+A compromised Front Distributor may disrupt service, drop/misroute transport, influence Gateway placement, and observe transport metadata available at its layer.
+
+It must not be able to manufacture valid Device/User/Tenant/Resource authorization, create production policy, administer PKI/AD, gain endpoint administration, or replace the Gateway's independent session/authorization checks.
+
+Front Distributor identities/configuration are scoped to ingress placement/health. Individual Front Distributor nodes should be replaceable without changing endpoint configuration.
+
+Loss of all Front Distributors does not trigger a hidden direct-to-Gateway production bypass. Higher availability is provided through another equivalent ingress failure domain rather than a different security architecture.
 
 ## Gateway boundary
 
@@ -199,6 +212,8 @@ Loss of a non-forwarding dependency does not automatically invalidate previously
 
 Fresh security decisions fail when their required authority is unavailable and no explicitly defined bounded cached decision remains valid. Drawbridge does not silently bypass required authentication, MFA, PKI, policy, or identity stages to preserve apparent connectivity.
 
+Front Distributor failure should fail over through the stable Drawbridge Service Address without changing Device identity or silently broadening authorization.
+
 Gateway failure should fail over/resume through another authorized Gateway without changing Device identity.
 
 Queues, pending control work, spools, staging areas, session counts, and storage are bounded. Resource controls should isolate one Device, producer, or Tenant from exhausting the entire Site where practical.
@@ -227,7 +242,7 @@ A fully compromised Device may generate malicious traffic and may falsify Device
 
 Immutable history protects already committed canonical objects from later modification through normal producer authority; it does not make a compromised producer truthful about new observations.
 
-A fully compromised Windows trust domain, PKI issuer, software-signing authority, Gateway host, Controller host, or DRS host invalidates the guarantees that depend on that authority. The design objective is blast-radius containment and independent recovery, not magical preservation of trust after the governing authority is owned.
+A fully compromised Windows trust domain, PKI issuer, software-signing authority, Gateway host, Controller host, or DRS host invalidates the guarantees that depend on that authority. A compromised Front Distributor has serious availability/traffic-placement impact but does not by design become an authorization authority. The design objective is blast-radius containment and independent recovery, not magical preservation of trust after the governing authority is owned.
 
 An authorized administrator inherently possesses the ability to exercise the authority actually granted, including potentially disruptive actions such as in-scope revocation or production change.
 

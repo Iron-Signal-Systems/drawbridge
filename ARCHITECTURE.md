@@ -66,9 +66,27 @@ Managed components establish authenticated persistent control channels to the Co
 
 The Controller has no general-purpose remote shell into managed components and should operate on a dedicated management/control network.
 
+### Drawbridge Front Distributor
+
+Provides the redundant production ingress/traffic-placement tier between the Drawbridge Service Address and the Gateway pool.
+
+Responsibilities are deliberately narrow:
+
+- route supported Drawbridge transport to eligible Gateways;
+- evaluate Gateway placement eligibility/health;
+- support maintenance drain and required affinity;
+- expose ingress health;
+- create placement/failover Records.
+
+The Front Distributor does not grant Device/User/Tenant/Resource authorization, compile policy, administer AD/PKI, or replace Gateway enforcement.
+
+Individual Front Distributor nodes should be disposable/reconstructable. Production Agents target the stable Drawbridge Service Address, not named Gateways.
+
+See [HA-AND-SESSION-CONTINUITY.md](HA-AND-SESSION-CONTINUITY.md).
+
 ### Drawbridge Gateway
 
-Terminates remote Drawbridge transport and is responsible for:
+Receives Drawbridge transport through the production ingress tier and is responsible for:
 
 - device/session authentication;
 - virtual-address binding;
@@ -109,18 +127,35 @@ Preferred DRS design is hardened FreeBSD with ZFS, PF, VNET jails, and a host-lo
 ## 3. Core architecture
 
 ```text
-                      DRAWBRIDGE CONTROLLER
-                      configuration / policy
-                       identity / records
-                              |
-                +-------------+-------------+
-                |                           |
-                v                           v
-         DRAWBRIDGE AGENT            DRAWBRIDGE GATEWAY
-                |                           |
-                |<==== mobility transport =>|
-                |                           |
-          endpoint network            enterprise network
+                         DRAWBRIDGE CONTROLLER
+                     configuration / policy / health
+                                  |
+                    +-------------+-------------+
+                    |             |             |
+                    v             v             v
+             DRAWBRIDGE AGENT  FRONT       DRAWBRIDGE
+                              DISTRIBUTOR    GATEWAY
+                    |             |             |
+                    |             +------->-----+
+                    |                           |
+                    +-- mobility transport ---->|
+                      via stable Service Address |
+                                                v
+                                        enterprise network
+```
+
+Production data-plane path:
+
+```text
+Drawbridge Agent
+    ->
+Drawbridge Service Address
+    ->
+redundant Drawbridge Front Distributor tier
+    ->
+eligible Drawbridge Gateway
+    ->
+enterprise firewall/network
 ```
 
 The Controller is authoritative for configuration and policy distribution but must not be required for every forwarded packet.
@@ -248,15 +283,24 @@ Drawbridge must not invent novel cryptography.
 
 ## 9. HA
 
-Production design assumes at least two Gateway nodes.
+Production design uses a stable Drawbridge Service Address, a redundant Front Distributor tier, and multiple eligible Gateway nodes.
 
 Requirements:
 
+- Agents target the Service Address rather than named Gateways;
+- Front Distributors perform traffic placement only and do not grant authorization;
+- one Front Distributor failure must not require endpoint reconfiguration;
+- Front Distributor state should be disposable/reconstructable where practical;
 - Gateway failure must not invalidate endpoint identity;
-- sessions must be resumable on another authorized Gateway;
-- maintenance must not require mass reauthentication where avoidable;
+- sessions must be resumable on another authorized Gateway where current security state permits;
+- maintenance must support draining Front Distributors/Gateways without broad outage;
+- loss of the front tier does not activate a separate direct-to-Gateway production bypass;
 - Controller loss must not immediately terminate established sessions;
 - DR and test environments are part of the licensed site model.
+
+Exact ingress mechanism, active/active versus active/standby, transport-aware routing, and replicated-session-state versus resume-token mechanics remain open Phase 0/1 prototype decisions.
+
+See [HA-AND-SESSION-CONTINUITY.md](HA-AND-SESSION-CONTINUITY.md).
 
 ## 10. Failure philosophy
 
