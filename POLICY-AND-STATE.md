@@ -193,7 +193,9 @@ Examples requiring defined behavior:
 
 No hidden implicit fail-open behavior.
 
-A declared PKI compromise is fail-closed for all new trust establishment through the affected issuer.
+Unavailable and compromised dependencies are different states. Loss of a non-forwarding dependency does not automatically invalidate independently current established authorization, while a fresh decision must not invent authorization when a required authority is unavailable.
+
+A declared PKI compromise is fail-closed for all new trust establishment through the affected issuer once that compromise state is known to the enforcement point.
 
 ## 13. DNS policy
 

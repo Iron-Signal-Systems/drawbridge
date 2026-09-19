@@ -26,7 +26,7 @@ It should observe, subject to platform capability and site policy:
 - session state;
 - trusted/untrusted network state;
 - network changes;
-- location observations when enabled.
+- location observations where platform capability permits, preserving source, freshness, and accuracy where available.
 
 The sensor should preserve:
 

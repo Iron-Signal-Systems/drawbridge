@@ -65,6 +65,9 @@ what later analysis concluded
 - Validation result
 - Production promotion
 - Rollback/revert
+- Software release/update verification
+- Software installation/rollback result
+- Records query/export/retention action
 - Licensing/entitlement administrative event
 - Health/preflight event
 
@@ -107,7 +110,7 @@ Historical records must not be rewritten because DNS resolves differently later.
 
 ## 5. Location
 
-Location is a first-class observation but is unusually sensitive.
+Location is a first-class recorded Drawbridge observation where the Device/platform can provide it.
 
 Possible sources:
 
@@ -118,28 +121,25 @@ Possible sources:
 - trusted-network/site classification;
 - administrator-defined site identity.
 
-Each record should include:
+Each location Record should preserve:
 
 - source;
 - timestamp;
 - accuracy where available;
 - age/freshness where available;
-- raw observation appropriate to configured privacy level.
+- the observation at the precision actually supplied by the source.
 
-Physical location and network-derived location must not be silently conflated.
+Physical location and network-derived location are separate facts and must not be silently conflated. Location is an observation with known source/quality, not infallible proof of Device position.
 
-## 6. Location controls
+If a source cannot provide location, use an explicit state such as NOT_AVAILABLE, NOT_SUPPORTED, PERMISSION_DENIED, SENSOR_FAILED, or NOT_OBSERVED rather than an ambiguous semantic null where the distinction matters.
 
-Site policy should support modes such as:
+## 6. Location access and retention
 
-- disabled;
-- network-location only;
-- coarse physical location;
-- precise physical location.
+Location collection is part of the normal Records model where platform capability permits it.
 
-Access to location records should itself be auditable.
+Access to location history is separately authorized, Tenant/Site scoped in backend policy, and auditable. Bulk export is a distinct sensitive operation where implemented.
 
-Retention may differ from general connection metadata.
+Retention may differ from general connection metadata and is governed explicitly rather than inferred from canonical-object immutability.
 
 ## 7. Agent and Gateway independence
 

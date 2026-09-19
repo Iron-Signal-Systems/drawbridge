@@ -17,6 +17,24 @@ Every production Gateway and Controller exports a complete normalized configurat
 
 Objects are complete snapshots, not deltas, and include source identity/role, configuration version, effective policy/configuration identifiers, creation time, content hash, lineage reference, and required schema/version data.
 
+Any production configuration required to reconstruct another Drawbridge component must either be deterministically regenerable from DRS-protected authoritative configuration or be preserved in DRS itself. Local-only recovery-critical configuration is not allowed to exist outside both of those paths.
+
+## Secret exclusion
+
+DRS preserves configuration, not reusable runtime secrets.
+
+Recovery objects must not contain:
+
+- private keys;
+- passwords;
+- bearer or refresh tokens;
+- reusable MFA material;
+- CA signing keys;
+- production software-signing keys;
+- recoverable gMSA secrets.
+
+Recovery creates new host/service identities and new private credentials rather than restoring compromised secret material.
+
 ## Immutable from birth
 
 A canonical DRS object is immutable from birth.
@@ -84,7 +102,7 @@ Management, ingestion, recovery, and replication planes are independently contro
 1. isolate affected production systems;
 2. identify the last defensible known-good DRS recovery point;
 3. verify hash, lineage, and source metadata;
-4. rebuild affected hosts from trusted media;
+4. rebuild affected hosts from trusted media and an independently verified authorized software release;
 5. create new host/service identities;
 6. issue new credentials from a trusted PKI path;
 7. restore the selected verified configuration;
@@ -93,3 +111,8 @@ Management, ingestion, recovery, and replication planes are independently contro
 10. return the rebuilt component to service.
 
 A historical DRS object is a recovery source, not live policy authority.
+
+
+## Availability boundary
+
+DRS is not a forwarding or live-authorization dependency. DRS unavailability increases recovery risk and must raise health/operational alerts, but it does not by itself terminate otherwise authorized production traffic.

@@ -219,7 +219,19 @@ Test results should be visible to all authorized stakeholders so the system buil
 
 Tests must prove managed components reject artifacts targeted to another system, invalid hashes, unsupported schemas, stale/older production versions, retired protocol/cryptographic versions, undefined generic control operations, and duplicate object identifiers with conflicting content.
 
-## 14. Recovery testing
+## 14. Software update trust testing
+
+Release/update tests must prove:
+
+- exact GitHub source commit pin is preserved in the release manifest;
+- artifact hash mismatch is rejected;
+- invalid/unknown ISS release signature is rejected;
+- wrong component/platform package is rejected;
+- revoked or below-minimum release is rejected;
+- live GitHub availability is not required to verify an already approved release artifact;
+- normal Controller configuration operations cannot invoke arbitrary binary execution.
+
+## 15. Recovery testing
 
 Acceptance includes DRS checkpoint age, immediate checkpoint after production change, stored-hash verification, lineage/gap detection, recovery-object export, rebuild of a test Gateway/Controller from a verified recovery object, and proof that DRS administration does not depend on production AD.
 

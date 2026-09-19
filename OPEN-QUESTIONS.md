@@ -55,7 +55,7 @@ The canonical object model is decided: complete write-once objects are immutable
 - Ingestion protocol and durable-receipt format?
 - Signing/checkpoint model?
 - Default retention?
-- Physical location default: off?
+- Exact location-source precedence, accuracy/freshness semantics, and retention profile?
 - Process attribution coverage and privacy boundaries?
 
 ## Controller control plane
@@ -149,9 +149,29 @@ Need an explicit acceptance matrix for:
 The pilot success definition must be operational, not merely "tunnel connected."
 
 
-## Remaining threat-model completion
+## Software supply chain
 
-- software/update and supply-chain compromise;
-- availability and denial-of-service boundaries;
-- privacy/sensitive telemetry boundaries;
-- final accepted-risk and non-goal statements.
+The trust model is decided: production releases use an exact GitHub source commit pin, strong artifact hash, signed ISS release manifest, component/platform identity, and current release authorization. GitHub provenance is not the sole runtime trust root.
+
+Open implementation questions:
+
+- exact release-manifest schema and signature profile?
+- signing-key protection/HSM or hardware-token workflow?
+- release revocation and minimum-version distribution format?
+- independently hosted/offline artifact mirror strategy?
+- build provenance and reproducibility requirements at each maturity stage?
+
+## Availability thresholds
+
+The fail-behavior principles are decided; exact operational constants remain open:
+
+- maximum policy-cache age by decision class?
+- session-resumption window?
+- reconnect backoff/jitter parameters?
+- per-Device/per-Tenant/session/control queue limits?
+- Records/DRS spool thresholds and escalation levels?
+- maximum DRS checkpoint age before warning/critical state?
+
+## Threat-model baseline status
+
+Issue #2 threat-model design baseline is closed. Remaining questions above are implementation parameters or later-design ownership, not unresolved threat-model principles.

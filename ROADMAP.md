@@ -104,7 +104,7 @@ Build:
 - policy decisions;
 - Gateway observations;
 - network transitions;
-- optional location observation;
+- location observation with source/accuracy/freshness where platform capability permits;
 - correlation.
 
 Success:

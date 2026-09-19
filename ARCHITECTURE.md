@@ -102,6 +102,8 @@ Canonical Records are complete write-once objects immutable from birth. Mutable 
 
 DRS preserves complete, verifiable Gateway/Controller configuration outside production AD trust. A new immutable object is created after each production configuration change and at least every 12 hours.
 
+Recovery-critical configuration for other components must be either deterministically regenerable from DRS-protected authoritative state or directly DRS-protected. DRS does not escrow reusable runtime secrets; recovery creates new identities/private credentials.
+
 Preferred DRS design is hardened FreeBSD with ZFS, PF, VNET jails, and a host-local Sealer. See [RECOVERY-STORE.md](RECOVERY-STORE.md).
 
 ## 3. Core architecture

@@ -48,9 +48,11 @@ Compromise of one Agent may expose that Device's runtime authority and local Age
 
 ## Lost or stolen Device revocation
 
-Any authorized in-scope Revocation Operator may immediately revoke a Device without waiting for a second approver, AD change, normal change window, or certificate-expiration cycle.
+Any authorized in-scope Revocation Operator may immediately make a Device revocation authoritative without waiting for a second approver, AD change, normal change window, or certificate-expiration cycle.
 
-Revocation terminates active Device Sessions and denies resume/new sessions. Certificate revocation is initiated and reconnect attempts are recorded.
+Every reachable enforcement point treats revocation as security-urgent state: terminate affected active Device Sessions, deny resume, and deny new sessions. Certificate revocation is initiated and reconnect attempts are recorded.
+
+A genuinely partitioned enforcement point cannot enforce state it has not yet received. Stale authority during a real communications partition is an explicitly bounded distributed-systems risk; once authoritative revocation state becomes reachable, it must take precedence over prior authorization.
 
 A lost/stolen credential is never simply unrevoked. A recovered Device requires hands-on IT verification, new key/CSR, full certificate re-issue, renewed enrollment binding, validation, and return-to-service authorization. The old certificate remains permanently revoked.
 
@@ -132,11 +134,17 @@ A host-side Sealer with no network listener validates staged complete objects, i
 
 Canonical DRS objects are immutable from birth. DRS is recovery anchor, not live policy authority.
 
+DRS stores recoverable configuration, not reusable runtime secrets. Recovery objects must not contain private keys, passwords, bearer tokens, reusable MFA material, CA signing keys, software-signing keys, or recoverable gMSA secrets.
+
+Any production configuration required to reconstruct a Drawbridge component must either be deterministically regenerable from DRS-protected authoritative configuration or be preserved in DRS itself.
+
 ## PKI compromise
 
 A valid certificate is an identity input, not complete authorization.
 
 Once an issuing PKI authority is declared compromised, no new trust establishment through it is permitted: new Device connections, reconnects requiring fresh authentication, initialization/bootstrap, enrollment/renewal, and affected infrastructure trust establishment are denied.
+
+The compromise decision is authoritative immediately. Components that have received that state fail closed for new trust; a genuinely partitioned component cannot enforce state it has not yet received and must revalidate current trust when communication is restored.
 
 Existing established sessions are a separate incident-response decision.
 
@@ -160,11 +168,75 @@ Production configuration versions advance monotonically. Intentional rollback cr
 
 Protocol, schema, certificate-profile, and cryptographic negotiation enforce minimum accepted versions and do not silently fall back.
 
-## Remaining work
+## Software, update, and supply-chain compromise
 
-Before this threat-model issue is closed:
+Executable-software authority is separate from runtime configuration authority.
 
-- software/update and supply-chain compromise;
-- availability and denial-of-service boundaries;
-- privacy/sensitive telemetry boundaries;
-- final accepted-risk and non-goal statements.
+The normal Controller control channel may distribute declarative configuration artifacts but must not become a generic mechanism for arbitrary binary installation or code execution.
+
+Production updates are tied to:
+
+- exact GitHub source commit pin;
+- component purpose and target platform;
+- release/version identity;
+- strong artifact hash;
+- signed ISS release manifest;
+- current release authorization/minimum-version policy.
+
+Floating Git references such as `main`, `HEAD`, or `latest` are not production update identities.
+
+GitHub provides source/release provenance but is not the sole production software trust root. A production component must be able to verify an approved artifact from its signed manifest and artifact hash without requiring live GitHub availability at installation time.
+
+Source-control access, build authority, release approval, software-signing authority, distribution, and production installation are distinct security boundaries. Runtime Agent/Gateway/Controller/Connector/DRS identities do not possess production software-signing keys.
+
+Historical signature validity does not override current software-release revocation or minimum accepted version. Compromise of the production software-signing authority is a software trust collapse for releases beneath that authority.
+
+## Availability and denial of service
+
+Unavailable and compromised are different states.
+
+Loss of a non-forwarding dependency does not automatically invalidate previously established authorization that remains independently current. In particular, temporary Controller, Records, or DRS unavailability must not unnecessarily terminate valid established forwarding.
+
+Fresh security decisions fail when their required authority is unavailable and no explicitly defined bounded cached decision remains valid. Drawbridge does not silently bypass required authentication, MFA, PKI, policy, or identity stages to preserve apparent connectivity.
+
+Gateway failure should fail over/resume through another authorized Gateway without changing Device identity.
+
+Queues, pending control work, spools, staging areas, session counts, and storage are bounded. Resource controls should isolate one Device, producer, or Tenant from exhausting the entire Site where practical.
+
+Security-urgent state such as Device revocation or compromised-issuer state is prioritized over routine configuration and health traffic.
+
+DRS unavailability degrades recovery readiness and health status; it is not by itself a reason to stop otherwise authorized public-safety forwarding.
+
+## Privacy and sensitive telemetry
+
+Drawbridge collects telemetry for defined operational, security, troubleshooting, policy-verification, audit, and recovery purposes.
+
+Device location is a first-class recorded observation where the platform can provide it. Location Records preserve source, timestamp, freshness/age, and accuracy where available. Physical location and network-derived location are distinct facts, and location is an observation rather than infallible proof of position.
+
+Routine Drawbridge Records do not contain application payload bodies, passwords, private keys, bearer tokens, reusable authentication secrets, MFA secrets, or other reusable credential material.
+
+Process attribution is initially observational and must not be represented as stronger than the underlying platform observation supports.
+
+Records authorization is separate from policy/system/storage administration. Tenant/Site scope is enforced by backend authorization. Sensitive queries, bulk exports, retention changes, and governed destruction are attributable. Immutability does not mean indefinite retention.
+
+## Accepted risks and explicit non-goals
+
+Drawbridge reduces and compartmentalizes risk; it does not make a compromised endpoint, compromised trust authority, malicious authorized User, vulnerable application, or unavailable network safe.
+
+A fully compromised Device may generate malicious traffic and may falsify Device-originated observations. Gateway/resource/firewall boundaries remain independent controls.
+
+Immutable history protects already committed canonical objects from later modification through normal producer authority; it does not make a compromised producer truthful about new observations.
+
+A fully compromised Windows trust domain, PKI issuer, software-signing authority, Gateway host, Controller host, or DRS host invalidates the guarantees that depend on that authority. The design objective is blast-radius containment and independent recovery, not magical preservation of trust after the governing authority is owned.
+
+An authorized administrator inherently possesses the ability to exercise the authority actually granted, including potentially disruptive actions such as in-scope revocation or production change.
+
+Drawbridge cannot create network availability where no viable transport exists and cannot force an upstream network to forward traffic. Encrypted transport does not make Drawbridge an anonymity system; underlying networks may still observe metadata such as endpoint/Gateway addresses, timing, volume, and duration.
+
+Drawbridge is not an EDR, DLP system, CASB, SWG, general enterprise firewall, general RMM platform, malware sandbox, full SIEM replacement, application-security replacement, identity-provider replacement, or PKI replacement.
+
+Commercial licensing state is never a security authorization input or packet-forwarding kill switch.
+
+## Threat-model baseline status
+
+Issue #2 threat-model design baseline is closed. Exact timeout values, cache lifetimes, rate limits, failover thresholds, and other implementation constants remain owned by their corresponding later design issues rather than being guessed here.

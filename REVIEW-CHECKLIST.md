@@ -19,6 +19,12 @@
 - [ ] Controller management/control networking is isolated from ordinary traffic.
 - [ ] Service Connectors are Resource scoped and independently firewalled.
 - [ ] Full domain compromise is treated as domain trust collapse.
+- [ ] Revocation becomes authoritative immediately and reachable enforcement points prioritize it over routine work.
+- [ ] Real partitions are treated honestly: an unreachable enforcement point cannot apply state it has not received.
+- [ ] Software/configuration authority are separate; the normal Controller channel cannot become generic code execution.
+- [ ] Production updates bind exact GitHub source commit, artifact hash, signed ISS release manifest, component/platform, version, and current release authorization.
+- [ ] GitHub provenance is not the sole production software trust root and live GitHub access is not required to verify an approved artifact.
+- [ ] Production software-signing keys are absent from runtime Drawbridge components.
 
 ## Identity
 
@@ -76,7 +82,10 @@
 - [ ] DNS resolution-at-time is preserved.
 - [ ] Agent and Gateway observations are separate.
 - [ ] Policy version and configuration commit are linked to decisions.
-- [ ] Location is supported but strongly controlled.
+- [ ] Location is recorded as a first-class observation where the platform can provide it.
+- [ ] Location Records preserve source, time, freshness, and accuracy where available.
+- [ ] Physical location and network-derived location remain distinct facts.
+- [ ] Location history access/export is separately authorized, scoped, and auditable.
 - [ ] Canonical Records objects are immutable from birth.
 - [ ] Canonical objects are complete write-once objects, not append targets.
 - [ ] Mutable indexes/views are derived and rebuildable.
@@ -103,6 +112,8 @@
 - [ ] Host-side Sealer has no network listener.
 - [ ] Recovery access is read-only and independently authenticated.
 - [ ] Acceptance includes a test rebuild from a verified DRS object.
+- [ ] DRS recovery objects exclude reusable runtime secrets and signing private keys.
+- [ ] Recovery-critical configuration is either DRS-protected or deterministically regenerable from DRS-protected authoritative state.
 
 ## Licensing
 
@@ -123,6 +134,9 @@
 - [ ] IPv6 is included from design start.
 - [ ] DNS and overlapping RFC1918 space are explicit design problems.
 - [ ] Break-glass recovery is controlled and audited.
+- [ ] Controller/Records/DRS unavailability does not unnecessarily terminate independently valid established forwarding.
+- [ ] Fresh security decisions never invent authorization when a required authority is unavailable.
+- [ ] Device/Tenant/producer queues, spools, and storage are bounded where practical.
 
 ## Scope restraint
 
@@ -131,3 +145,5 @@
 - [ ] SWG is not v1.
 - [ ] EDR is not v1.
 - [ ] Drawbridge does not autonomously change production policy.
+- [ ] Drawbridge does not claim to be EDR, DLP, CASB, SWG, general firewall/RMM, malware sandbox, SIEM replacement, IdP replacement, or PKI replacement.
+- [ ] Immutable Records do not imply that a compromised producer is truthful about new observations.

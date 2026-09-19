@@ -209,7 +209,7 @@ DNS failure must be distinguishable from tunnel failure.
 
 ## 15. Lost/stolen Device response
 
-Any authorized in-scope Revocation Operator may revoke a Device immediately. Drawbridge terminates active Device Sessions, denies resume/new sessions, initiates certificate revocation, and records subsequent attempts.
+Any authorized in-scope Revocation Operator may make Device revocation authoritative immediately. Reachable enforcement points terminate affected active Device Sessions, deny resume/new sessions, initiate certificate revocation, and record subsequent attempts. A truly partitioned enforcement point applies the authoritative revocation as soon as communication is restored.
 
 Return to service requires hands-on IT verification, new key generation, full certificate re-issue, renewed enrollment, and validation.
 
@@ -222,3 +222,12 @@ Full domain compromise is treated as domain trust collapse. Recovery uses verifi
 ## 17. Controller self-review
 
 The Controller compares its security posture to an explicit baseline and identifies unexpected services/listeners, broadened permissions, certificate/private-key ACL changes, widened firewall exposure, stale/revoked trust, configuration hash mismatch, and failed Records/DRS delivery. Self-review recommends remediation rather than silently broadening authority.
+
+
+## 18. Dependency availability
+
+Unavailable and compromised dependencies are different operational states.
+
+Temporary Controller, Records, or DRS unavailability must not unnecessarily terminate independently valid established forwarding. Fresh authentication/authorization decisions do not silently bypass a required authority merely because it is unavailable.
+
+DRS checkpoint age, Records spool pressure, control-channel backlog, and identity/PKI dependency availability are explicit health conditions.

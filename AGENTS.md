@@ -519,6 +519,22 @@ secrets.
 
 ---
 
+## Software Update Trust Rules
+
+Production updates must bind an exact GitHub source commit pin to a strong artifact hash and signed ISS release manifest that also identifies component purpose, platform, and version.
+
+Do not use floating Git references such as `main`, `HEAD`, or `latest` as production update identities.
+
+GitHub is provenance, not the sole runtime software trust root. Verification of an approved artifact must not require live GitHub access.
+
+The normal Controller configuration channel must not become a generic binary-installation or arbitrary-code-execution path.
+
+Runtime Drawbridge components must not possess production software-signing private keys.
+
+A historically valid release may still be currently revoked or below the minimum accepted version.
+
+---
+
 ## Security Rules
 
 Do not:
@@ -537,6 +553,7 @@ silently bypass the tunnel after policy failure
 allow licensing state to stop public-safety forwarding
 rewrite, append to, or patch canonical Records
 give a network-facing DRS jail mutable access to canonical recovery storage
+place reusable runtime secrets or signing private keys in DRS recovery objects
 treat full domain compromise as though domain-managed identities remain trustworthy
 autonomously apply a recommended production policy change
 ```
@@ -664,3 +681,10 @@ A lost/stolen Device may be revoked immediately by one in-scope Revocation Opera
 DRS is outside production AD trust. Gateways/Controllers push complete recovery objects after each production change and at least every 12 hours. Network-facing DRS VNET jails never receive mutable canonical-store access.
 
 A full domain compromise is a domain trust collapse. Recovery uses independently protected trust and verified configuration.
+
+
+## Threat-Model Baseline Rules
+
+Issue #2 is closed at the design-principle level. Implementation work must preserve THREAT-MODEL.md rather than silently redefining its compromise, availability, telemetry, supply-chain, or accepted-risk boundaries.
+
+Location is a normal first-class Records observation where platform capability permits it; preserve source, freshness, and accuracy rather than treating location as infallible truth.

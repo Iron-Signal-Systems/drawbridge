@@ -91,4 +91,6 @@ The first serious target is a Windows-centric enterprise/public-safety deploymen
 
 This repository baseline is a design package only. It intentionally contains no production code yet.
 
-No implementation should be treated as approved until the architecture is reviewed and accepted.
+The Issue #2 threat-model design baseline is closed and documented in [THREAT-MODEL.md](THREAT-MODEL.md). Later implementation constants such as timeouts, queue limits, and cache lifetimes remain owned by their corresponding design issues.
+
+No implementation should be treated as approved until the remaining pre-code architecture issues are reviewed and accepted.

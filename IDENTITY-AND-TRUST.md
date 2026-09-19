@@ -199,7 +199,7 @@ Cross-tenant access requires explicit policy.
 
 ## 6. Device revocation and recovery
 
-Any authorized in-scope Revocation Operator may immediately revoke a Device. Active Device Sessions terminate and new/resumed sessions are denied without waiting for AD or normal PKI publication.
+Any authorized in-scope Revocation Operator may immediately make Device revocation authoritative. Every reachable enforcement point terminates affected active Device Sessions and denies new/resumed sessions without waiting for AD or normal PKI publication. A genuinely partitioned enforcement point cannot apply revocation state until it can receive it; once received, revocation overrides prior authorization.
 
 A lost/stolen credential is never simply unrevoked. Recovery requires hands-on IT verification, new key/CSR, full Device certificate re-issue, renewed enrollment, and validation. The old credential remains permanently revoked.
 
