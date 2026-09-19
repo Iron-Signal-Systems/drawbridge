@@ -45,7 +45,9 @@ HA-AND-SESSION-CONTINUITY.md locks:
 - traffic-placement-only Front Distributor authority;
 - Gateway-independent authorization enforcement;
 - disposable/reconstructable Front Distributor state where practical;
-- no direct-to-Gateway emergency production bypass;
+- versioned Gateway Placement Profiles defining primary ingress/Gateway pools and explicit total Front Distributor failure behavior;
+- profile-scoped FAIL_CLOSED, SECONDARY_INGRESS, or explicitly authorized DIRECT_GATEWAY_FALLBACK behavior;
+- deterministic direct-fallback targets/order and no Domain/Shared-Service cross-profile selection during failure;
 - identity/session continuity as independent from Transport Path/Front Distributor/Gateway assignment.
 
 The exact session recovery mechanism remains open and is tracked below.
@@ -77,6 +79,7 @@ Must resolve:
 - what the Agent may block/select locally;
 - what the Front Distributor may inspect/use for placement;
 - what the Front Distributor must never authorize;
+- what the Gateway Placement Profile may select versus what it must never authorize;
 - what the Gateway must independently validate;
 - what Resource policy is enforced at Agent versus Gateway;
 - what the enterprise firewall remains independently responsible for;
@@ -210,7 +213,7 @@ Exit condition: Phase 1 can implement one transport path without inventing new c
 
 ### P0-10 - HA session recovery mechanism
 
-The ingress topology is already closed. This issue selects how a logical Device Session survives Gateway failure.
+The ingress topology and Gateway Placement Profile failure-policy contract are already closed. This issue selects how a logical Device Session survives Gateway failure and resumes when the authorized transport destination changes.
 
 Evaluate:
 
@@ -311,7 +314,7 @@ Convert the threat-model principles into per-dependency behavior.
 
 Cover at least:
 
-- Front Distributor;
+- Front Distributor, including complete primary-ingress loss under each configured Gateway Placement Profile behavior;
 - Gateway;
 - Controller;
 - AD;
@@ -338,6 +341,7 @@ Define:
 - Device class/Windows versions;
 - Domain-Managed versus Shared-Service scope for first pilot;
 - number/topology of Front Distributors/Gateways;
+- Gateway Placement Profile(s), including Domain/Shared-Service separation and pilot fallback behavior;
 - Resource types;
 - AD/PKI/NPS integrations;
 - routing model;

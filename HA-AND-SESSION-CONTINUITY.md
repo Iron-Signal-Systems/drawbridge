@@ -8,7 +8,7 @@ It intentionally separates architecture invariants from implementation mechanism
 
 ## 2. Stable Drawbridge service ingress
 
-Production Agents target a stable Drawbridge Service Address rather than a named Gateway.
+Production Agents normally target a stable Drawbridge Service Address rather than a named Gateway. The effective Gateway Placement Profile defines the only authorized exception when the configured Front Distributor tier is unavailable.
 
 Conceptually:
 
@@ -79,22 +79,49 @@ Preferred state characteristics:
 
 The exact production topology remains an implementation choice. A small on-premises deployment may use a redundant pair; larger or geographically resilient deployments may have additional ingress failure domains.
 
-## 5. No direct-to-Gateway emergency bypass
+## 5. Gateway Placement Profile and total-ingress failure
 
-Loss of all Front Distributors in one ingress failure domain does not cause Agents to switch to a separate direct-to-Gateway production architecture.
+Drawbridge does not invent a failure route when ingress is unavailable.
 
-A hidden or rarely exercised bypass would create different:
+Each in-scope Device population is assigned a versioned **Gateway Placement Profile** defining:
 
-- firewall exposure;
-- certificates/trust;
-- routing;
-- DDoS controls;
-- transport behavior;
-- health logic;
-- testing;
-- attack surface.
+- primary Drawbridge Service Address;
+- authorized Front Distributor/ingress set;
+- eligible Gateway pool;
+- total Front Distributor failure behavior;
+- optional secondary ingress;
+- optional direct-Gateway fallback targets;
+- deterministic fallback target order/selection behavior.
 
-If higher availability is required, provide another equivalent Drawbridge ingress failure domain that preserves the same architecture:
+Domain-Managed and Shared-Service environments may intentionally use different profiles and network domains.
+
+Example:
+
+```text
+COUNTY-DOMAIN
+  primary: db-domain.county.gov
+  ingress: DB-DOM-FP-01 / DB-DOM-FP-02
+  gateways: DB-DOM-GW-01 / DB-DOM-GW-02 / DB-DOM-GW-03
+
+REGIONAL-SHARED
+  primary: db-shared.county.gov
+  ingress: DB-SH-FP-01 / DB-SH-FP-02
+  gateways: DB-SH-GW-01 / DB-SH-GW-02 / DB-SH-GW-03
+```
+
+Failure of the Domain ingress does not authorize a Domain Agent to select a Shared-Service Gateway, and the reverse is also true.
+
+Supported total Front Distributor failure policies are:
+
+### FAIL_CLOSED
+
+The Agent does not establish a new alternate Drawbridge ingress path. Existing behavior follows the defined session/transport failure contract.
+
+### SECONDARY_INGRESS
+
+The Agent uses a separately configured equivalent Drawbridge ingress failure domain named by the Placement Profile.
+
+The secondary path preserves the normal architecture:
 
 ```text
 Agent
@@ -105,6 +132,30 @@ Front Distributor
   ->
 Gateway
 ```
+
+### DIRECT_GATEWAY_FALLBACK
+
+The Agent may connect directly only to Gateway targets explicitly named by the Placement Profile.
+
+Direct fallback is not an improvised bypass. Every eligible direct-fallback Gateway must be intentionally configured, exposed, cryptographically identified, firewalled, health-checked, and tested for that role before production use.
+
+The Placement Profile defines deterministic target selection/order. The Agent must not randomly choose an arbitrary reachable Gateway.
+
+Direct fallback changes only the transport destination. It does not change:
+
+- Device identity;
+- User identity/authorization;
+- Tenant;
+- Resource policy;
+- revocation state;
+- Gateway peer authentication;
+- Gateway independent session/authorization enforcement.
+
+Direct-fallback mode is a degraded operational state and must be visible and recorded.
+
+### Profile availability
+
+The Agent must already possess the signed/versioned effective Gateway Placement Profile needed for failure handling. Total-ingress recovery must not depend on receiving new routing instructions from the Controller after ingress has failed.
 
 ## 6. Gateway pool and maintenance
 
@@ -170,6 +221,17 @@ If one Front Distributor fails and another member of the same ingress service re
 
 Endpoint configuration does not change.
 
+If all Front Distributors defined for the primary ingress fail:
+
+1. the Agent identifies its current signed/versioned Gateway Placement Profile;
+2. it follows that profile's configured behavior only;
+3. FAIL_CLOSED creates no alternate ingress;
+4. SECONDARY_INGRESS uses only the configured secondary Drawbridge ingress;
+5. DIRECT_GATEWAY_FALLBACK uses only explicitly authorized fallback Gateways and the configured deterministic target order/selection policy;
+6. no failure condition permits crossing into a different Domain/Shared-Service Placement Profile merely because another path is reachable;
+7. normal cryptographic identity, revocation, session, and Resource authorization remain in force;
+8. degraded/fallback state and recovery are recorded.
+
 ## 9. Gateway failure
 
 If a Gateway fails:
@@ -228,9 +290,12 @@ HA/distribution events are first-class Records.
 
 Useful facts include:
 
+- Gateway Placement Profile identity/version;
+- configured total-ingress-failure policy;
 - Service Address/ingress identity;
 - Front Distributor identity;
 - selected Gateway;
+- fallback target/selection reason where applicable;
 - previous Gateway where applicable;
 - placement reason;
 - Gateway eligibility/health transition;
@@ -252,6 +317,9 @@ At minimum, later implementation acceptance should include:
 
 - kill active/serving Front Distributor;
 - remove/restore Service Address ownership or equivalent ingress;
+- fail the entire primary Front Distributor tier and verify the configured Gateway Placement Profile behavior;
+- verify Domain-Managed and Shared-Service profiles cannot cross-select each other's ingress/Gateway pools during failure;
+- where direct fallback is enabled, verify only explicitly configured fallback Gateways are attempted in the configured deterministic order/selection behavior;
 - kill active Gateway;
 - drain Gateway for maintenance;
 - restore Gateway and prove eligibility checks before new placement;
@@ -281,9 +349,14 @@ Locked architecture:
 - Front Distributor authority is traffic placement only;
 - Gateway independently validates/enforces Drawbridge authorization;
 - Front Distributor state should be disposable/reconstructable where practical;
-- no direct-to-Gateway emergency production bypass;
+- Gateway Placement Profile is the authoritative configuration object for primary ingress/Gateway placement and total Front Distributor failure behavior;
+- total-ingress behavior is explicit: FAIL_CLOSED, SECONDARY_INGRESS, or DIRECT_GATEWAY_FALLBACK;
+- direct fallback may target only explicitly prepared/named Gateways and uses deterministic configured selection behavior;
+- failure never authorizes crossing between Domain-Managed and Shared-Service Placement Profiles;
+- fallback changes transport placement only and does not weaken Gateway/session/Resource authorization;
+- the Agent has the signed/versioned effective Placement Profile before a failure requires it;
 - Transport Path/Front Distributor/Gateway failure does not by itself redefine Device/User identity or the logical Device Session;
-- HA/failover events are recorded and intentionally tested.
+- HA/failover/fallback events are recorded and intentionally tested.
 
 Still open for prototype/ADR work:
 
@@ -294,5 +367,7 @@ Still open for prototype/ADR work:
 - exact Gateway health/eligibility contract;
 - replicated session state versus cryptographic resume state/token versus hybrid;
 - Connection-ID-aware routing if QUIC is selected;
+- exact representation/distribution/cache contract for Gateway Placement Profiles;
+- direct-fallback Gateway exposure/health mechanism and deterministic selection algorithm;
 - geographic ingress/site affinity and DR behavior;
 - exact interruption/session-resume timing targets.

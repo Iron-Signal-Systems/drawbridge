@@ -84,6 +84,7 @@ Changes requiring comments include:
 - PKI/CA configuration;
 - DNS;
 - tenant configuration;
+- Gateway Placement Profiles, Service Addresses, ingress sets, Gateway pools, and fallback behavior;
 - remote-management authorization;
 - Records/retention policy;
 - Gateway/Controller environment configuration;
@@ -247,6 +248,11 @@ Required scenarios eventually include:
 
 - kill the currently serving Front Distributor;
 - fail/move the stable Service Address or equivalent ingress ownership;
+- fail the entire primary Front Distributor tier and verify the effective Gateway Placement Profile behavior;
+- where Domain-Managed and Shared-Service profiles are separate, prove they cannot cross-select each other's ingress/Gateway pools;
+- where DIRECT_GATEWAY_FALLBACK is configured, prove only explicitly named Gateways are attempted using the configured deterministic selection/order and that normal Gateway authorization remains intact;
+- where SECONDARY_INGRESS is configured, prove the Agent uses only the configured secondary ingress;
+- where FAIL_CLOSED is configured, prove no alternate ingress is invented;
 - kill an active Gateway;
 - drain a Gateway and verify no new placement while existing sessions follow the defined continuity contract;
 - restore a Gateway and prove health/eligibility before new placement;
@@ -264,4 +270,4 @@ For a Front Distributor failure, verify:
 - no unauthorized Resource access;
 - complete correlated Records for failure, placement, resume, and recovery.
 
-Loss of all Front Distributors must not cause Agents to enter a separate direct-to-Gateway emergency architecture.
+Loss of all Front Distributors must produce exactly the behavior defined by the effective Gateway Placement Profile. No failure test may pass because the Agent found an unconfigured reachable Gateway or crossed a Domain/Shared-Service profile boundary.

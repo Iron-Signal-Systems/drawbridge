@@ -26,8 +26,8 @@ without licensing logic choosing which device stops working.
 Target model:
 
 - production Controller;
-- normal HA Gateway pair;
-- DR/standby;
+- supported production HA topology, including redundant Front Distributor capacity and Gateway capacity appropriate to the Site;
+- normal DR/standby capability;
 - test/staging;
 - test Devices/Agents;
 - unlimited managed endpoints within supported engineering capacity;
@@ -60,7 +60,7 @@ Drawbridge should expose:
 - virtual-address capacity;
 - Records ingestion load.
 
-When a site outgrows an Gateway cluster, add capacity because the infrastructure needs it—not because endpoint #201 crossed a licensing threshold.
+When a site outgrows its Front Distributor/Gateway capacity or failure-domain design, add capacity because the infrastructure needs it—not because endpoint #201 crossed a licensing threshold. Licensing does not hard-code a two-Gateway topology.
 
 ## 5. Licensing and the data path
 

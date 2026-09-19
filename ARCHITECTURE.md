@@ -80,7 +80,7 @@ Responsibilities are deliberately narrow:
 
 The Front Distributor does not grant Device/User/Tenant/Resource authorization, compile policy, administer AD/PKI, or replace Gateway enforcement.
 
-Individual Front Distributor nodes should be disposable/reconstructable. Production Agents target the stable Drawbridge Service Address, not named Gateways.
+Individual Front Distributor nodes should be disposable/reconstructable. Production Agents normally target the stable Drawbridge Service Address rather than named Gateways. The Agent's versioned Gateway Placement Profile defines the authorized behavior if the entire configured Front Distributor tier becomes unavailable.
 
 See [HA-AND-SESSION-CONTINUITY.md](HA-AND-SESSION-CONTINUITY.md).
 
@@ -283,22 +283,30 @@ Drawbridge must not invent novel cryptography.
 
 ## 9. HA
 
-Production design uses a stable Drawbridge Service Address, a redundant Front Distributor tier, and multiple eligible Gateway nodes.
+Production design uses a stable Drawbridge Service Address, a redundant Front Distributor tier, and a Gateway pool sized/topologized for the Site.
+
+A **Gateway Placement Profile** binds a Device population or trust/deployment domain to its normal ingress path and explicitly defines total Front Distributor failure behavior.
 
 Requirements:
 
-- Agents target the Service Address rather than named Gateways;
+- Agents normally target the Service Address rather than named Gateways;
 - Front Distributors perform traffic placement only and do not grant authorization;
 - one Front Distributor failure must not require endpoint reconfiguration;
 - Front Distributor state should be disposable/reconstructable where practical;
 - Gateway failure must not invalidate endpoint identity;
 - sessions must be resumable on another authorized Gateway where current security state permits;
 - maintenance must support draining Front Distributors/Gateways without broad outage;
-- loss of the front tier does not activate a separate direct-to-Gateway production bypass;
+- Domain-Managed and Shared-Service paths may use different Placement Profiles, Service Addresses, ingress sets, and Gateway pools;
+- failure must never cause Drawbridge to cross from one Placement Profile/trust domain into another merely because another Gateway is reachable;
+- total Front Distributor failure follows the pre-authorized Placement Profile behavior: FAIL_CLOSED, SECONDARY_INGRESS, or DIRECT_GATEWAY_FALLBACK;
+- direct-Gateway fallback, when enabled, may use only explicitly named/prepared fallback Gateways and a deterministic configured selection/order;
+- direct fallback changes transport placement only; Gateway identity/session validation and Device/User/Tenant/Resource authorization remain unchanged;
+- the Agent must possess the signed/versioned effective Placement Profile before the failure so recovery does not depend on obtaining new instructions from an unavailable Controller;
+- fallback/degraded operation is visible to administrators and recorded;
 - Controller loss must not immediately terminate established sessions;
 - DR and test environments are part of the licensed site model.
 
-Exact ingress mechanism, active/active versus active/standby, transport-aware routing, and replicated-session-state versus resume-token mechanics remain open Phase 0/1 prototype decisions.
+Exact Service Address mechanism, active/active versus active/standby Front Distributors, transport-aware routing, Gateway-pool sizing, and replicated-session-state versus resume-token mechanics remain implementation/prototype decisions.
 
 See [HA-AND-SESSION-CONTINUITY.md](HA-AND-SESSION-CONTINUITY.md).
 

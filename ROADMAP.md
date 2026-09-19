@@ -20,6 +20,7 @@ Freeze:
 - PKI profiles and PKI-compromise behavior;
 - Site/Tenant model;
 - stable Drawbridge Service Address and Front Distributor authority boundary;
+- Gateway Placement Profile contract, including profile-scoped total Front Distributor failure behavior;
 - HA/session-continuity contract;
 - transport requirements;
 - licensing invariants.
@@ -37,6 +38,7 @@ Build:
 - Drawbridge Front Distributor proof-of-concept behind a stable Service Address;
 - Drawbridge Gateway proof-of-concept;
 - basic Gateway health/placement contract;
+- initial Gateway Placement Profile representation and Agent consumption;
 - virtual interface;
 - stable virtual address;
 - secure authenticated transport;
@@ -140,6 +142,7 @@ Build:
 - redundant Front Distributor tier;
 - stable Service Address failover;
 - Front Distributor drain/failure handling;
+- Gateway Placement Profile fail-closed, secondary-ingress, and configured direct-fallback handling as applicable to the pilot topology;
 - Gateway clustering;
 - session resume across Gateway failure;
 - Controller independence;
@@ -151,7 +154,8 @@ Build:
 - synthetic functional tests.
 
 Success:
-- planned maintenance and single-node failure do not create mass outage.
+- planned maintenance and single-node failure do not create mass outage;
+- complete primary-ingress failure follows the configured Gateway Placement Profile without cross-profile routing, random Gateway selection, or authorization weakening.
 
 ## Phase 9 - Pilot hardening
 

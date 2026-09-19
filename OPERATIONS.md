@@ -28,7 +28,10 @@ For an endpoint, IT should be able to see:
 - current external path;
 - carrier/network where available;
 - virtual address;
+- current Gateway Placement Profile/version;
 - current Front Distributor/ingress path;
+- configured total-ingress-failure mode;
+- current normal/fallback/degraded ingress mode;
 - current Gateway;
 - current session;
 - trusted/untrusted state;
@@ -254,4 +257,23 @@ Operators must be able to drain a Front Distributor or Gateway before maintenanc
 
 A single Front Distributor failure should be operationally boring: the stable service remains/re-becomes reachable through another ingress node and Agents resume/re-establish without redefining identity or authorization.
 
-Loss of all Front Distributors does not trigger an untested direct-to-Gateway bypass. Higher availability uses another equivalent ingress failure domain.
+Loss of all Front Distributors follows the effective Gateway Placement Profile. Operators must be able to see whether the profile is FAIL_CLOSED, using SECONDARY_INGRESS, or operating in DIRECT_GATEWAY_FALLBACK. Direct fallback may use only explicitly prepared/named Gateways and deterministic configured selection; it must never cross Domain/Shared-Service profile boundaries or weaken normal Gateway authorization.
+
+## 20. Gateway Placement Profile operations
+
+Gateway Placement Profiles are normal production configuration and follow the same versioned/tested/promotion workflow as other production-affecting configuration.
+
+Operational views should expose:
+
+- profile name/ID and effective version;
+- Device population/trust domain using the profile;
+- primary Service Address;
+- Front Distributor/ingress set;
+- eligible Gateway pool;
+- total Front Distributor failure behavior;
+- secondary ingress where configured;
+- direct-fallback Gateways and deterministic selection/order where configured;
+- current normal/degraded/fallback mode;
+- last profile-driven failover/fallback event.
+
+A profile change that alters ingress or fallback authority is security- and availability-significant and must not be an anonymous runtime toggle.

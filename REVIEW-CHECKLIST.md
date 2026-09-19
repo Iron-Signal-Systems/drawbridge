@@ -72,15 +72,21 @@
 - [ ] Stable logical identity survives physical network changes.
 - [ ] Roaming/dead-zone session persistence is core.
 - [ ] Connected transport is not considered proof of functional service.
-- [ ] Agents target a stable Drawbridge Service Address rather than named Gateways.
+- [ ] Agents normally target a stable Drawbridge Service Address rather than named Gateways.
 - [ ] Production Front Distributors are redundant and narrowly limited to traffic placement/health.
 - [ ] Front Distributor placement never substitutes for Gateway authorization.
 - [ ] Front Distributor nodes are disposable/reconstructable where practical.
+- [ ] Gateway Placement Profiles are versioned production configuration.
+- [ ] A Placement Profile binds its Device population/trust domain to primary ingress, eligible Gateway pool, and explicit total Front Distributor failure behavior.
+- [ ] Domain-Managed and Shared-Service Placement Profiles do not cross-select each other's ingress/Gateway pools during failure.
+- [ ] Total Front Distributor failure is explicitly configured as FAIL_CLOSED, SECONDARY_INGRESS, or DIRECT_GATEWAY_FALLBACK.
+- [ ] Direct fallback, when enabled, uses only explicitly prepared/named Gateways and deterministic configured selection/order.
+- [ ] Direct fallback changes transport placement only and does not weaken normal Gateway/session/Resource authorization.
+- [ ] The Agent has the signed/versioned effective Placement Profile before a failure requires it.
 - [ ] Gateway maintenance supports drain/no-new-session behavior.
 - [ ] Front Distributor/Gateway failure does not by itself change Device/User identity or the logical Device Session.
-- [ ] Loss of the front tier does not activate a separate direct-to-Gateway emergency production path.
 - [ ] HA/session recovery is required before serious pilot.
-- [ ] Active Front Distributor and active Gateway failure are explicit acceptance tests.
+- [ ] Active Front Distributor, full primary-ingress, and active Gateway failure are explicit acceptance tests.
 
 ## Records
 

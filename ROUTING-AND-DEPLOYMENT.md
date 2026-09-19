@@ -11,7 +11,43 @@ Routing is modeled on two independent axes:
 
 This allows a simple DMZ deployment to remain simple while still supporting more complex proxy/connector deployments where required.
 
-Production ingress is a separate HA layer: the Agent targets the stable Drawbridge Service Address, the redundant Front Distributor tier selects an eligible Gateway, and the Gateway performs Drawbridge authorization/enforcement before enterprise handoff.
+Production ingress is a separate HA layer: the Agent normally targets the stable Drawbridge Service Address, the redundant Front Distributor tier selects an eligible Gateway, and the Gateway performs Drawbridge authorization/enforcement before enterprise handoff. The Device's Gateway Placement Profile defines the only authorized behavior if the configured Front Distributor tier is unavailable.
+
+## 1.1 Gateway Placement Profiles and ingress failure
+
+Gateway Placement Profiles keep ingress/failure behavior explicit and aligned with the customer's network design.
+
+A profile binds a Device population or trust/deployment domain to:
+
+- its primary Drawbridge Service Address;
+- its authorized Front Distributor/ingress set;
+- its eligible Gateway pool;
+- its total Front Distributor failure policy;
+- any secondary ingress;
+- any direct-Gateway fallback targets and deterministic selection/order.
+
+Domain-Managed and Shared-Service paths may be intentionally separate.
+
+Example:
+
+```text
+COUNTY-DOMAIN
+  Service Address: db-domain.county.gov
+  Front Distributor set: DB-DOM-FP-*
+  Gateway pool: DB-DOM-GW-*
+  total-ingress failure: SECONDARY_INGRESS
+
+REGIONAL-SHARED
+  Service Address: db-shared.county.gov
+  Front Distributor set: DB-SH-FP-*
+  Gateway pool: DB-SH-GW-*
+  total-ingress failure: DIRECT_GATEWAY_FALLBACK
+  fallback targets: DB-SH-GW-01, then DB-SH-GW-03
+```
+
+Drawbridge must not respond to a Domain ingress failure by selecting a Shared-Service Gateway, or vice versa.
+
+Where DIRECT_GATEWAY_FALLBACK is enabled, those Gateways are deliberate emergency ingress points with explicit exposure, identity, firewall, health, and test requirements. Direct fallback changes only transport placement; normal Gateway authorization remains mandatory.
 
 ## 2. Endpoint traffic selection
 
@@ -97,7 +133,7 @@ The enterprise firewall remains authoritative for:
 
 Drawbridge remains authoritative for:
 
-- stable Drawbridge service ingress and Gateway placement;
+- stable Drawbridge service ingress, Gateway Placement Profiles, and Gateway placement;
 - device/session identity;
 - user authorization;
 - tunnel eligibility;
@@ -392,7 +428,7 @@ The existing firewall may apply additional restrictions.
 
 This creates defense in depth without forcing duplicated policy everywhere.
 
-Front Distributor placement is not authorization. Gateway hosts independently validate/enforce Drawbridge session and Resource policy. Front Distributor and Gateway identities are separately scoped.
+Gateway Placement Profile selection and Front Distributor placement are not authorization. Gateway hosts independently validate/enforce Drawbridge session and Resource policy. Front Distributor and Gateway identities are separately scoped. A fallback path may change where transport arrives, but never what the Device/User/Tenant is authorized to reach.
 
 Gateway hosts use host-specific service identities and receive no general domain administrative authority. A compromised Device may generate malicious traffic, so authenticated Device traffic remains constrained by Drawbridge Resource policy and the enterprise firewall.
 

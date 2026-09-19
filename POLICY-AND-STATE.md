@@ -12,6 +12,7 @@ Drawbridge should use a small set of understandable objects:
 - Access Profiles
 - Remote Management Policies
 - Gateways
+- Gateway Placement Profiles
 - Sites
 
 The product should not create deep, opaque override hierarchies.
@@ -184,6 +185,7 @@ Security failure behavior must be explicit and administrator-configurable within
 Examples requiring defined behavior:
 
 - Controller unreachable;
+- all Front Distributors for the primary ingress unavailable;
 - cached policy expired;
 - Gateway available but directory unavailable;
 - CRL/OCSP temporarily unreachable;
@@ -192,6 +194,8 @@ Examples requiring defined behavior:
 - Device clock skew.
 
 No hidden implicit fail-open behavior.
+
+Total Front Distributor failure is governed by the Device's current signed/versioned Gateway Placement Profile. The only permitted profile outcomes are explicit failure behavior such as FAIL_CLOSED, SECONDARY_INGRESS, or DIRECT_GATEWAY_FALLBACK to pre-authorized targets. Availability failure does not create new security authority.
 
 Unavailable and compromised dependencies are different states. Loss of a non-forwarding dependency does not automatically invalidate independently current established authorization, while a fresh decision must not invent authorization when a required authority is unavailable.
 

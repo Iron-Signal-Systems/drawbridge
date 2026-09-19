@@ -232,6 +232,37 @@ validated according to Drawbridge trust policy.
 An SSID, subnet, gateway address, or other unauthenticated network
 characteristic is not by itself equivalent to Trusted Network status.
 
+### Gateway Placement Profile
+
+A versioned Site/deployment configuration object that defines the authorized
+Drawbridge ingress and Gateway-placement path for a specific Device population
+or trust/deployment domain.
+
+A Gateway Placement Profile defines at least:
+
+- primary Drawbridge Service Address;
+- authorized Front Distributor/ingress set;
+- eligible Gateway pool;
+- total Front Distributor failure behavior;
+- any explicitly authorized secondary ingress;
+- any explicitly authorized direct-Gateway fallback targets;
+- deterministic target ordering/selection rules where fallback has multiple targets.
+
+Domain-Managed and Shared-Service deployments may use separate Gateway Placement
+Profiles, Service Addresses, Front Distributor sets, and Gateway pools. Failure
+does not authorize crossing from one profile/trust domain into another.
+
+Permitted total-ingress-failure behaviors include:
+
+- FAIL_CLOSED;
+- SECONDARY_INGRESS;
+- DIRECT_GATEWAY_FALLBACK.
+
+DIRECT_GATEWAY_FALLBACK changes only the transport destination. It does not
+weaken Device/User/Tenant/Resource authorization or Gateway peer validation.
+Only Gateways explicitly prepared, exposed, tested, and named by the profile
+may receive direct fallback traffic.
+
 ## 5. Canonical relationship
 
 ```text
@@ -341,6 +372,7 @@ transport_path_id
 resource_id
 site_id
 tenant_id
+gateway_placement_profile_id
 recovery_store_id
 authority_grant_id
 ```
@@ -368,6 +400,7 @@ Drawbridge Agent        != Drawbridge Gateway
 Device Session          != User Session
 Transport Path          != Device identity
 Drawbridge Service Address != peer authentication
+Gateway Placement Profile != security authorization
 Front Distributor placement != Gateway authorization
 Gateway authorization   != enterprise firewall authorization
 Domain identity          != domain administrative authority

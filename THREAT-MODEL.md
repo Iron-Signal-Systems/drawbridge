@@ -69,7 +69,7 @@ It must not be able to manufacture valid Device/User/Tenant/Resource authorizati
 
 Front Distributor identities/configuration are scoped to ingress placement/health. Individual Front Distributor nodes should be replaceable without changing endpoint configuration.
 
-Loss of all Front Distributors does not trigger a hidden direct-to-Gateway production bypass. Higher availability is provided through another equivalent ingress failure domain rather than a different security architecture.
+Total Front Distributor failure follows the Device's signed/versioned Gateway Placement Profile. A profile may fail closed, use an explicitly configured secondary ingress, or permit direct fallback only to explicitly prepared/named Gateways. Failure never authorizes crossing between Domain-Managed and Shared-Service placement profiles, and direct fallback does not weaken Gateway peer authentication or Device/User/Tenant/Resource authorization.
 
 ## Gateway boundary
 

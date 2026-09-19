@@ -52,6 +52,8 @@ what later analysis concluded
 - Session resumed
 - Session migrated
 - Session terminated
+- Gateway Placement Profile assignment/change
+- Gateway Placement Profile fallback/degraded-mode event
 - Front Distributor placement decision
 - Front Distributor health/failover event
 - Gateway eligibility/drain event
@@ -180,6 +182,7 @@ Candidate identifiers:
 - `policy_version`
 - `config_commit_id`
 - `gateway_id`
+- `gateway_placement_profile_id`
 - `tenant_id`
 - `test_run_id`
 
@@ -290,9 +293,12 @@ Front Distributor/Gateway placement and failover must be reconstructable rather 
 
 Relevant Records should preserve, where applicable:
 
+- Gateway Placement Profile identity/version;
+- configured total-ingress-failure mode;
 - Drawbridge Service Address/ingress identity;
 - Front Distributor identity;
 - selected Gateway;
+- fallback target and deterministic selection reason/order where applicable;
 - prior Gateway;
 - placement reason;
 - Gateway eligibility/health state;
@@ -304,4 +310,4 @@ Relevant Records should preserve, where applicable:
 - virtual identity/address preserved/changed;
 - data-plane restoration time.
 
-A Front Distributor placement Record is not an authorization Record. Gateway authorization/enforcement remains independently attributable.
+A Gateway Placement Profile or Front Distributor placement Record is not an authorization Record. Gateway authorization/enforcement remains independently attributable. Records must also make cross-profile selection attempts or unexpected direct-ingress attempts visible as security-relevant events.

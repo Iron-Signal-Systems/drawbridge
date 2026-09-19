@@ -46,6 +46,7 @@ Drawbridge is not intended to be "another VPN." Its core design goals are:
 13. **Drawbridge should make secure change safer than doing nothing.**
 14. **The internal policy model should be simple and deterministic even when external integrations are broad.**
 15. **Agents target a stable Drawbridge service; replaceable ingress/Gateway nodes must not redefine session identity or authorization.**
+16. **Ingress failure behavior is explicit: a Gateway Placement Profile defines the authorized failure path; Drawbridge never invents one during an outage.**
 
 ## Initial target
 
@@ -55,7 +56,8 @@ The first serious target is a Windows-centric enterprise/public-safety deploymen
 - Drawbridge Controller;
 - stable Drawbridge Service Address;
 - redundant Drawbridge Front Distributor tier;
-- redundant Drawbridge Gateway nodes;
+- versioned Gateway Placement Profiles defining normal ingress/Gateway placement and total-ingress-failure behavior;
+- production Gateway capacity/topology appropriate to the Site rather than a fixed node count;
 - Active Directory integration;
 - AD CS / domain PKI integration;
 - optional NPS/RADIUS integration;

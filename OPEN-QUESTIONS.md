@@ -83,12 +83,16 @@ Open implementation questions:
 
 Core architecture is decided:
 
-- Agents target a stable Drawbridge Service Address rather than named Gateways;
+- Agents normally target a stable Drawbridge Service Address rather than named Gateways;
 - production uses a redundant Drawbridge Front Distributor tier;
 - Front Distributors perform traffic placement only and do not grant authorization;
 - Gateways independently validate/enforce Drawbridge session/authorization state;
 - Front Distributor state should be disposable/reconstructable where practical;
-- loss of all Front Distributors does not activate a direct-to-Gateway emergency production bypass;
+- Gateway Placement Profiles bind Device populations/trust domains to primary ingress, eligible Gateway pools, and explicit total Front Distributor failure behavior;
+- total Front Distributor failure behavior is profile-scoped: FAIL_CLOSED, SECONDARY_INGRESS, or DIRECT_GATEWAY_FALLBACK;
+- direct fallback may use only explicitly prepared/named Gateways with deterministic configured selection/order;
+- Domain-Managed and Shared-Service profiles do not cross-select each other's ingress/Gateway pools during failure;
+- fallback changes transport placement only and does not weaken normal identity/session/Resource authorization;
 - Transport Path, Front Distributor, or Gateway failure does not by itself redefine Device/User identity or the logical Device Session.
 
 Open implementation/ADR questions:
@@ -99,6 +103,8 @@ Open implementation/ADR questions:
 - exact Gateway health/eligibility contract?
 - replicated session state versus resumable cryptographic token/state versus hybrid?
 - if QUIC is selected, should Connection-ID-aware routing encode/recover Gateway placement?
+- exact Gateway Placement Profile schema, signing, distribution, caching, expiry, and update semantics?
+- direct-fallback Gateway exposure/health mechanism and deterministic selection algorithm?
 - Site affinity and multi-ingress selection?
 - geographic redundancy/failure-domain design?
 - exact data-plane behavior if Controller is unavailable for extended periods?

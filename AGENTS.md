@@ -60,6 +60,7 @@ Transport Path
 Resource
 Site
 Tenant / Agency
+Gateway Placement Profile
 ```
 
 Do not use `Client` or `Edge` as ambiguous standalone Drawbridge architecture
@@ -115,6 +116,7 @@ Drawbridge owns:
 device mobility identity
 persistent remote transport
 stable service ingress and Front Distributor placement
+Gateway Placement Profile configuration and explicit ingress-failure behavior
 device/bootstrap connectivity
 user access authorization
 trusted-network transitions
@@ -585,8 +587,9 @@ git diff --check
 Platform-sensitive behavior requires platform-representative testing.
 
 Mobility validation should eventually cover Wi-Fi/Ethernet/cellular transitions,
-temporary loss of connectivity, sleep/resume, NAT rebinding, Front Distributor failure,
-Gateway failover, and Controller unavailability.
+temporary loss of connectivity, sleep/resume, NAT rebinding, single Front Distributor failure,
+complete primary-ingress failure under the configured Gateway Placement Profile, Gateway failover,
+and Controller unavailability.
 
 A later success does not erase an earlier failed test.
 
@@ -707,6 +710,12 @@ Gateways independently validate/enforce the Drawbridge session and authorization
 
 Individual Front Distributor nodes should be disposable/reconstructable where practical.
 
-Do not add a rarely exercised direct-to-Gateway emergency production path when the Front Distributor tier is unavailable. Additional resilience must preserve the same Service Address -> Front Distributor -> Gateway architecture.
+Gateway Placement Profiles are versioned production configuration. Each profile binds its Device population/trust domain to its primary Service Address, Front Distributor set, eligible Gateway pool, and explicit total Front Distributor failure behavior.
+
+Permitted total-ingress failure behavior is explicit: FAIL_CLOSED, SECONDARY_INGRESS, or DIRECT_GATEWAY_FALLBACK. Direct fallback may use only explicitly prepared/named Gateways and deterministic configured target selection/order.
+
+Never allow a failure to cross a Domain-Managed/Shared-Service Placement Profile boundary merely because another Gateway is reachable. Direct fallback changes transport placement only; it does not weaken Gateway/session/Resource authorization.
+
+The Agent must possess the signed/versioned effective Placement Profile before a failure requires it. Do not depend on an unavailable Controller to invent a new failure path.
 
 Transport, Front Distributor, or Gateway failure does not by itself redefine Device identity, User authorization, or the logical Device Session.
