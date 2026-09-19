@@ -26,6 +26,7 @@ Before making a material change, read the relevant current documents:
 - `LICENSING.md`
 - `OPERATIONS.md`
 - `ROADMAP.md`
+- `PHASE-0-REVIEW.md`
 - `OPEN-QUESTIONS.md`
 
 If implementation and documentation disagree, do not silently choose whichever

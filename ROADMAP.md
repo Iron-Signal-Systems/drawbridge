@@ -26,6 +26,8 @@ Freeze:
 
 Deliverable: design baseline suitable for implementation review.
 
+Current Phase 0 status and dependency-ordered remaining work are tracked in [PHASE-0-REVIEW.md](PHASE-0-REVIEW.md).
+
 ## Phase 1 - Basic lab transport
 
 Build:
