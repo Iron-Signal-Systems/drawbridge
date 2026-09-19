@@ -142,6 +142,8 @@ Drawbridge remains authoritative for:
 - mobility/session continuity;
 - Records.
 
+These responsibilities are split across enforcement boundaries: the Agent selects DIRECT/TUNNEL/DENY locally; the Front Distributor performs placement only; the Gateway independently authorizes tunneled enterprise traffic; and the enterprise firewall remains an additional independent deny/routing boundary. See [ENFORCEMENT-BOUNDARIES.md](ENFORCEMENT-BOUNDARIES.md).
+
 ### 3.2 Return routing
 
 Preferred behavior is preservation of the Drawbridge virtual Device address.
@@ -431,6 +433,8 @@ This creates defense in depth without forcing duplicated policy everywhere.
 Gateway Placement Profile selection and Front Distributor placement are not authorization. Gateway hosts independently validate/enforce Drawbridge session and Resource policy. Front Distributor and Gateway identities are separately scoped. A fallback path may change where transport arrives, but never what the Device/User/Tenant is authorized to reach.
 
 Gateway hosts use host-specific service identities and receive no general domain administrative authority. A compromised Device may generate malicious traffic, so authenticated Device traffic remains constrained by Drawbridge Resource policy and the enterprise firewall.
+
+For FQDN Resources, an Agent-observed DNS answer may drive local tunnel selection and Records but cannot by itself expand Gateway authorization. The Gateway requires the current authoritative/verifiable FQDN binding defined by the DNS architecture.
 
 ## 10. Recommended v1 priority
 

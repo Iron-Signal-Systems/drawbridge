@@ -161,6 +161,10 @@ Drawbridge should prefer either:
 
 It should not silently depend on obscure rule order.
 
+For tunneled enterprise traffic, effective access is the restrictive intersection of Agent local permission/path selection, Gateway independent authorization, and enterprise firewall/network acceptance. `TUNNEL` is not an allow decision. A broader grant at one enforcement point never overrides a restriction at another.
+
+Temporary Agent/Gateway policy-generation skew must not create a transient broader grant: new access is usable only when every required enforcement point has a compatible permit, while a deny/removal at either point is sufficient to stop matching traffic there. See [ENFORCEMENT-BOUNDARIES.md](ENFORCEMENT-BOUNDARIES.md).
+
 ## 10. Split routing
 
 Base functionality should include:

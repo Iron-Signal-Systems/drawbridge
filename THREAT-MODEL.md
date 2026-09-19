@@ -47,6 +47,8 @@ Agents do not trust, manage, authenticate to, or directly control peer Agents.
 
 Compromise of one Agent may expose that Device's runtime authority and local Agent state but must not automatically expose peer Devices/Agents, domain administration, Gateway/Controller administration, PKI administration, or production policy authority.
 
+An Agent `TUNNEL` decision is not Gateway authorization. Agent-originated process, location, network, DNS, Tenant, Resource, or routing claims are observations/requests at the Agent boundary unless a stronger assurance contract explicitly says otherwise. The Gateway must not broaden access solely because a compromised Agent supplied a more permissive claim.
+
 ## Lost or stolen Device revocation
 
 Any authorized in-scope Revocation Operator may immediately make a Device revocation authoritative without waiting for a second approver, AD change, normal change window, or certificate-expiration cycle.
@@ -71,6 +73,8 @@ Front Distributor identities/configuration are scoped to ingress placement/healt
 
 Total Front Distributor failure follows the Device's signed/versioned Gateway Placement Profile. A profile may fail closed, use an explicitly configured secondary ingress, or permit direct fallback only to explicitly prepared/named Gateways. Failure never authorizes crossing between Domain-Managed and Shared-Service placement profiles, and direct fallback does not weaken Gateway peer authentication or Device/User/Tenant/Resource authorization.
 
+If the Front Distributor terminates an outer transport layer, that termination is not sufficient Device/session authentication. The selected Gateway still independently validates the Drawbridge Device/session security context.
+
 ## Gateway boundary
 
 Each Gateway has its own host-specific gMSA set. Functions with different permissions use separate gMSAs where that reduces blast radius. Gateway identities have no general domain or endpoint administrative authority.
@@ -78,6 +82,8 @@ Each Gateway has its own host-specific gMSA set. Functions with different permis
 Compromise of GW-01 may expose traffic/sessions handled by GW-01, its local enforcement/network authority, local state, host-specific service identities, and Gateway-originated Records integrity. It must not automatically expose peer Gateway credentials, Agent identities, Device private keys, CA signing keys, Controller administration, domain administration, endpoint administration, or enterprise firewall administration.
 
 A compromised Device may generate malicious traffic. The Gateway constrains reachability; it is not an EDR. The enterprise firewall remains an independent deny boundary.
+
+The Gateway independently authorizes tunneled flows. A stale, compromised, or malicious Agent cannot convert its own `TUNNEL` decision into Gateway `ALLOW_FORWARD`, and a broader policy generation at one enforcement point cannot override a deny at another.
 
 A compromised Gateway can be isolated by revoking its Drawbridge identity, disabling only its host-specific gMSAs, removing it from HA/routing, and isolating network access.
 

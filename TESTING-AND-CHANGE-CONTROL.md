@@ -240,7 +240,26 @@ Acceptance includes DRS checkpoint age, immediate checkpoint after production ch
 A recovery test creates new history; it does not mutate historical DRS objects.
 
 
-## 16. HA and ingress failure testing
+## 16. Enforcement-boundary negative testing
+
+P0-03 enforcement acceptance must prove the boundaries fail restrictively.
+
+Required tests include:
+
+- Agent sends traffic it locally classifies TUNNEL but Gateway policy denies it: final result remains DENY;
+- Agent and Gateway run temporarily different policy generations: no transient broader grant appears;
+- a new grant exists only on the Agent: Gateway denies until compatible policy is active;
+- a new grant exists only on the Gateway: Agent does not originate traffic it still denies;
+- security-urgent revocation reaches one enforcement point before another: the first informed point denies and no stale allow overrides it;
+- forged Agent Tenant/Resource/profile/routing claims do not make the Front Distributor or Gateway broaden authorization;
+- Agent process/location/network observations cannot independently create a broader Gateway grant;
+- Agent-provided FQDN/IP binding cannot independently broaden Gateway Resource access without the defined authoritative DNS binding;
+- Front Distributor placement cannot substitute for Device/session authentication at the Gateway;
+- unsolicited inbound traffic is denied unless explicit inbound/Remote Management Policy and all required enforcement layers permit it;
+- Shared-Service inbound management remains denied by default;
+- Agent/Gateway observation mismatches create correlated Records and ambiguous authorization fails closed rather than choosing the more permissive interpretation.
+
+## 17. HA and ingress failure testing
 
 HA acceptance must deliberately inject failures rather than infer resilience from healthy-state monitoring.
 

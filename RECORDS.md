@@ -46,6 +46,10 @@ what later analysis concluded
 - Device authentication
 - User authentication
 - User authorization
+- Agent path decision (DIRECT/TUNNEL/DENY)
+- Gateway authorization decision
+- Agent/Gateway policy-generation mismatch
+- Agent/Gateway observation mismatch
 - Policy decision
 - Session established
 - Session suspended
@@ -311,3 +315,5 @@ Relevant Records should preserve, where applicable:
 - data-plane restoration time.
 
 A Gateway Placement Profile or Front Distributor placement Record is not an authorization Record. Gateway authorization/enforcement remains independently attributable. Records must also make cross-profile selection attempts or unexpected direct-ingress attempts visible as security-relevant events.
+
+Records must preserve enforcement-layer truth separately: Agent `TUNNEL` is not Gateway `ALLOW_FORWARD`; Gateway `ALLOW_FORWARD` is not proof that the enterprise firewall or destination application accepted the flow. When Agent and Gateway observations or policy generations disagree, preserve both producer-attributed facts rather than rewriting one side to match the other.

@@ -36,6 +36,22 @@ THREAT-MODEL.md now defines:
 - sensitive telemetry/location handling;
 - accepted risks/non-goals.
 
+### P0-03 - Agent / Front Distributor / Gateway / Firewall enforcement boundary — CLOSED
+
+ENFORCEMENT-BOUNDARIES.md now locks:
+
+- Agent DIRECT/TUNNEL/DENY semantics;
+- TUNNEL as path selection rather than Gateway authorization;
+- traffic-placement-only Front Distributor authority;
+- independent Gateway Device/session/User/Tenant/Resource authorization;
+- restrictive intersection of Agent and Gateway permits;
+- no transient broader grants from policy-generation skew;
+- unverified Agent process/location/network/DNS claims cannot independently broaden Gateway authorization;
+- independent enterprise firewall/network deny/routing authority;
+- explicit return versus unsolicited-inbound behavior;
+- Domain-Managed versus Shared-Service bootstrap/enforcement differences;
+- independent Agent/Gateway observations and fail-restrictive disagreement handling.
+
 ### P0-HA-A - HA ingress topology and authority — CLOSED
 
 HA-AND-SESSION-CONTINUITY.md locks:
@@ -69,25 +85,6 @@ The following already have sufficient design direction and should not be reopene
 - signed update provenance tied to exact GitHub source commit and artifact hash.
 
 ## Remaining Phase 0 work — dependency order
-
-### P0-03 - Agent / Front Distributor / Gateway / Firewall enforcement boundary — NEXT
-
-Define exactly which component may decide and enforce each class of traffic action.
-
-Must resolve:
-
-- what the Agent may block/select locally;
-- what the Front Distributor may inspect/use for placement;
-- what the Front Distributor must never authorize;
-- what the Gateway Placement Profile may select versus what it must never authorize;
-- what the Gateway must independently validate;
-- what Resource policy is enforced at Agent versus Gateway;
-- what the enterprise firewall remains independently responsible for;
-- behavior when Agent and Gateway observations/claims disagree;
-- inbound/return-path enforcement;
-- Shared-Service versus Domain-Managed differences.
-
-Exit condition: no packet is allowed merely because one untrusted/lower-authority component claimed it was authorized.
 
 ### P0-04 - User authorization assertion and User Session binding
 
@@ -372,7 +369,7 @@ Exit condition: code cannot bypass the engineering/change-control rules the prod
 
 Phase 0 is complete when:
 
-1. P0-03 through P0-17 are closed or explicitly deferred with a documented reason;
+1. P0-04 through P0-17 are closed or explicitly deferred with a documented reason;
 2. architecture/terminology/threat/routing/Records/HA documents agree;
 3. transport and HA recovery ADRs are sufficient for a Phase 1 prototype;
 4. identity/authorization/PKI contracts no longer depend on unspecified magic;
@@ -384,18 +381,6 @@ Phase 0 is complete when:
 
 ## Immediate next step
 
-Proceed with **P0-03 - Agent / Front Distributor / Gateway / Firewall enforcement boundary**.
+Proceed with **P0-04 - User authorization assertion and User Session binding**.
 
-The HA work changes this issue from a two-sided Agent/Gateway question into a four-boundary enforcement chain:
-
-```text
-Agent
-  ->
-Front Distributor
-  ->
-Gateway
-  ->
-Enterprise Firewall
-```
-
-The goal is to decide exactly which component may claim, verify, enforce, or merely observe each security fact.
+P0-03 now establishes that the Gateway cannot accept an Agent statement such as “this User is authorized” as authority by itself. P0-04 must define the bounded assertion that turns successful Windows/AD/NPS/RADIUS/federated authentication into a current Drawbridge User Session without sending or replaying reusable User credentials.

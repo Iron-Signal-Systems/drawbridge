@@ -14,6 +14,7 @@ Before making a material change, read the relevant current documents:
 - `README.md`
 - `TERMINOLOGY.md`
 - `ARCHITECTURE.md`
+- `ENFORCEMENT-BOUNDARIES.md`
 - `HA-AND-SESSION-CONTINUITY.md`
 - `THREAT-MODEL.md`
 - `IDENTITY-AND-TRUST.md`
@@ -99,6 +100,8 @@ When a statement depends on a security boundary, name the exact actor.
 
 > **Shared-service connectivity does not imply domain trust or endpoint
 > administrative authority.**
+
+> **Agent TUNNEL is path selection, not Gateway authorization; a broader decision at one enforcement layer never overrides a restriction at another.**
 
 > **Drawbridge should make secure change safer than doing nothing.**
 
@@ -335,6 +338,7 @@ outbound access                        != inbound management
 shared-service access                  != domain trust
 shared-service access                  != local admin rights
 Agent said sent                       != Gateway received
+Agent TUNNEL                         != Gateway ALLOW_FORWARD
 Front Distributor placement              != Gateway authorization
 Gateway received                          != Gateway forwarded
 Gateway forwarded                         != destination accepted

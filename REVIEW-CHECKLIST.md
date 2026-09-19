@@ -54,6 +54,25 @@
 - [ ] NAT is compatibility behavior, not the preferred default.
 - [ ] Service connector/proxy mode is available for complex deployments.
 
+## Enforcement boundaries
+
+- [ ] Agent DIRECT/TUNNEL/DENY is local path/enforcement state; TUNNEL is not Gateway authorization.
+- [ ] Front Distributor performs placement only and cannot grant Device/User/Tenant/Resource access.
+- [ ] If an outer transport terminates at the Front Distributor, Gateway still independently validates Device/session security context.
+- [ ] Gateway independently validates current Device/session/User/Tenant/Resource authorization before forwarding.
+- [ ] Agent and Gateway permits combine restrictively; a broader grant at one layer never overrides a deny at another.
+- [ ] Policy-generation skew cannot create transient broader access.
+- [ ] Unverified Agent process/location/network/DNS claims do not independently broaden Gateway authorization.
+- [ ] FQDN Gateway authorization requires the authoritative/verifiable binding defined by the DNS architecture.
+- [ ] Enterprise firewall/network remains an independent deny/routing boundary.
+- [ ] Service Connector mode is Resource scoped and can further restrict but never broaden Gateway authorization.
+- [ ] Drawbridge does not silently widen firewall/segmentation policy to restore a failed flow.
+- [ ] Return traffic is tied to authorized flow/session state.
+- [ ] Unsolicited inbound is denied by default and requires explicit Gateway + Agent + endpoint + firewall authorization.
+- [ ] Domain-Managed bootstrap access is explicit and limited before User authorization.
+- [ ] Shared-Service bootstrap does not imply hosting-domain trust or general network access.
+- [ ] Agent/Gateway observation disagreement remains separately attributable and ambiguous authorization does not fail open.
+
 ## Agent sensor and DNS
 
 - [ ] Every endpoint includes a first-class sensor.

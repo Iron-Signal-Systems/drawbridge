@@ -44,6 +44,8 @@ Common endpoint functions include:
 
 The Agent should remain unobtrusive to normal users. Operational detail is primarily for IT.
 
+For tunneled enterprise traffic, Agent enforcement is a local prefilter/path decision. `TUNNEL` does not grant enterprise Resource access; the Gateway independently authorizes the flow. See [ENFORCEMENT-BOUNDARIES.md](ENFORCEMENT-BOUNDARIES.md).
+
 ### Drawbridge Controller
 
 Responsible for:
@@ -98,6 +100,8 @@ Receives Drawbridge transport through the production ingress tier and is respons
 - high-availability participation.
 
 Each Gateway has host-specific gMSAs; separate functions use separate gMSAs where permissions differ. Gateway identities have no general domain or endpoint administrative authority.
+
+The Gateway is the authoritative Drawbridge enforcement point for traffic entering the enterprise through Drawbridge and independently validates current Device/session/User/Tenant/Resource authorization rather than trusting the Agent or Front Distributor to have authorized the traffic. See [ENFORCEMENT-BOUNDARIES.md](ENFORCEMENT-BOUNDARIES.md).
 
 ### Records subsystem
 
